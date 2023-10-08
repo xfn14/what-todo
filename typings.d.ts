@@ -1,10 +1,10 @@
-import { Models } from "appwrite"
+import { Models } from 'appwrite'
 
 interface Board {
     columns: Map<TypedColumn, Column>
 }
 
-type TypedColumn = "todo" | "inprogress" | "done"
+type TypedColumn = 'todo' | 'inprogress' | 'done'
 
 interface Column {
     id: TypedColumn
@@ -16,10 +16,10 @@ interface Todo {
     $createdAt: string
     title: string
     status: TypedColumn
-    image?: string
+    image?: Image
 }
 
 interface Image {
-    buckedId: string
+    bucketId: string
     fileId: string
 }
