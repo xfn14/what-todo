@@ -1,3 +1,4 @@
+import Modal from '@/components/Modal'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -13,10 +14,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="en">
             <head>
-                <link rel="icon" href="/icon.png" type="image/icon" sizes="any" />
+                <link rel="icon" href="/icon.png" type="image/png" sizes="any" />
             </head>
 
-            <body className="bg-[#010101] text-zinc-300">{children}</body>
+            <body className="bg-[#010101] text-zinc-300">
+                {children}
+                <Modal />
+            </body>
         </html>
     )
 }
