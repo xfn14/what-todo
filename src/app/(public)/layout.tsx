@@ -4,7 +4,7 @@ export default function PublicLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="flex flex-col">
+    <div className="flex h-full flex-col">
       <Navbar />
       {children}
     </div>

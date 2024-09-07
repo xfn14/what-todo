@@ -5,6 +5,7 @@ import { type Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { inter, bogart, lora, source } from "~/utils/fonts";
+import { ThemeProvider } from "~/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "What-Todo",
@@ -28,9 +29,18 @@ export default function RootLayout({
     >
       <html
         lang="en"
-        className={`${GeistSans.variable} ${inter.variable} ${bogart.variable} ${lora.variable} ${source.variable} dark`}
+        className={`${GeistSans.variable} ${inter.variable} ${bogart.variable} ${lora.variable} ${source.variable} h-full`}
       >
-        <body>{children}</body>
+        <body className="h-full">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
       </html>
     </ClerkProvider>
   );

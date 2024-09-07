@@ -1,16 +1,21 @@
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
+import { Logo } from "~/components/logo";
 import { Button } from "~/components/ui/button";
+import { ModeToggle } from "~/components/ui/theme-button";
 
 export function Navbar() {
   return (
-    <nav className="flex items-center justify-between border-b bg-transparent p-4 text-white">
+    <nav className="flex items-center justify-between border-b bg-transparent p-4">
       <div className="flex items-center">
         <Link href="/">
-          <h1 className="font-bogart text-xl font-bold">What-Todo</h1>
+          <Logo />
         </Link>
       </div>
-      <div>
+
+      <div className="flex gap-4">
+        <ModeToggle />
+
         <SignedIn>
           <Link href="/dashboard">
             <Button>Dashboard</Button>
@@ -18,14 +23,12 @@ export function Navbar() {
         </SignedIn>
 
         <SignedOut>
-          <div className="flex gap-4">
-            <Link href="/sign-in">
-              <Button>Sign-in</Button>
-            </Link>
-            <Link href="/sign-up">
-              <Button>Sign-up</Button>
-            </Link>
-          </div>
+          <Link href="/sign-in">
+            <Button className="dark:text-white">Login</Button>
+          </Link>
+          <Link href="/sign-up">
+            <Button variant={"secondary"}>Register</Button>
+          </Link>
         </SignedOut>
       </div>
     </nav>
