@@ -1,7 +1,4 @@
-export function truncateTaskTitle(
-  title: string,
-  maxLength: number = 40,
-): string {
+export function truncateTaskTitle(title: string, maxLength = 40): string {
   if (title.length > maxLength) {
     return title.substring(0, maxLength) + "...";
   }
