@@ -3,12 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useForm, useFormState } from "react-hook-form";
+import { useRef } from "react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { TimePickerDemo } from "~/components/time-picker-demo";
 import { Button } from "~/components/ui/button";
 import { Calendar } from "~/components/ui/calendar";
 import { Checkbox } from "~/components/ui/checkbox";
+import { DialogClose } from "~/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -31,24 +33,21 @@ import {
 } from "~/components/ui/select";
 import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
-import { createTask } from "~/server/queries";
-
-export const addTaskSchema = z.object({
-  title: z.string(),
-  space: z.string(),
-  description: z.string(),
-  priority: z.enum(["low", "medium", "high"]),
-  startAt: z.date(),
-  endAt: z.date().optional(),
-  recurrent: z.boolean().default(false).optional(),
-});
+import { createTaskAction } from "~/server/actions/actions";
+import { addTaskSchema } from "~/server/actions/schemas";
 
 export function AddTaskForm() {
+  const closeButton = useRef<HTMLButtonElement>(null);
+
   const form = useForm<z.infer<typeof addTaskSchema>>({
     resolver: zodResolver(addTaskSchema),
     defaultValues: {
+      title: "",
+      space: "",
+      description: "",
       priority: "low",
       startAt: new Date(),
+      endAt: undefined,
       recurrent: false,
     },
   });
@@ -56,15 +55,18 @@ export function AddTaskForm() {
   async function onSubmit(data: z.infer<typeof addTaskSchema>) {
     console.log(data);
 
-    // const res = await createTask({
-    //   title: data.title,
-    //   space: data.space,
-    //   description: data.description,
-    //   priority: data.priority,
-    //   startAt: data.startAt,
-    //   endAt: data.endAt,
-    //   recurrent: data.recurrent,
-    // });
+    await createTaskAction({
+      title: data.title,
+      space: data.space,
+      description: data.description,
+      priority: data.priority,
+      startAt: data.startAt,
+      endAt: data.endAt,
+      recurrent: data.recurrent,
+    });
+
+    form.reset();
+    closeButton.current?.click();
   }
 
   return (
@@ -90,7 +92,7 @@ export function AddTaskForm() {
             <FormItem>
               <FormLabel>Space</FormLabel>
 
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger className="col-span-3">
                     <SelectValue placeholder="Select a space" />
@@ -135,7 +137,7 @@ export function AddTaskForm() {
             <FormItem>
               <FormLabel>Priority</FormLabel>
 
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger className="col-span-3">
                     <SelectValue placeholder="Select a priority" />
@@ -267,6 +269,12 @@ export function AddTaskForm() {
         <Button type="submit" className="w-full">
           Create Task
         </Button>
+
+        <DialogClose asChild>
+          <Button ref={closeButton} className="sr-only">
+            Cancel
+          </Button>
+        </DialogClose>
       </form>
     </Form>
   );
