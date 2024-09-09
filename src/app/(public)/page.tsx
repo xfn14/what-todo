@@ -10,7 +10,7 @@ const LandingPage = () => {
       </div>
 
       <div className="flex items-center justify-center gap-10 pb-24">
-        <Link href="/sign-up">
+        <Link href="/dashboard">
           <Button
             size="lg"
             className="mt-6 text-lg transition-all duration-300 ease-in-out hover:scale-110 dark:text-white"

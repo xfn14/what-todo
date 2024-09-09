@@ -92,7 +92,8 @@ export function AllTasksList({ tasks, spaces }: TaskListProps) {
               </span>
 
               <span className={`rounded-full px-2 py-1 text-sm`}>
-                {task.space_id}
+                {spaces.find((space) => space.id === task.space_id)?.name ||
+                  "Error finding space"}
               </span>
             </div>
           ))}
