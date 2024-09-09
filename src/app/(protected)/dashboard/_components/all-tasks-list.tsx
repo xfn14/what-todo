@@ -3,6 +3,8 @@
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
+import { formatedTimestamp } from "~/utils/time-picker-utils";
+import { AddTaskButton } from "./add-task-button";
 
 export interface TaskListProps {
   tasks: Task[];
@@ -23,7 +25,7 @@ export interface Task {
   updatedAt: Date | null;
 }
 
-export function TasksList({ tasks }: TaskListProps) {
+export function AllTasksList({ tasks }: TaskListProps) {
   const toggleTask = (id: number) => {
     {
       /* TODO: Toggle task finished */
@@ -33,7 +35,12 @@ export function TasksList({ tasks }: TaskListProps) {
 
   return (
     <Card>
-      <CardHeader>All Tasks</CardHeader>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <span>All Tasks</span>
+          <AddTaskButton />
+        </div>
+      </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {tasks.map((task) => (
@@ -52,7 +59,23 @@ export function TasksList({ tasks }: TaskListProps) {
               </Label>
 
               <span className="text-sm text-muted-foreground">
-                {task.startAt.toDateString()}
+                {formatedTimestamp(task.startAt)}
+              </span>
+
+              <span
+                className={`rounded-full px-2 py-1 text-sm ${
+                  task.priority === "high"
+                    ? "bg-red-100 text-red-800"
+                    : task.priority === "medium"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : "bg-green-100 text-green-800"
+                }`}
+              >
+                {task.priority}
+              </span>
+
+              <span className={`rounded-full px-2 py-1 text-sm`}>
+                {task.space}
               </span>
             </div>
           ))}
