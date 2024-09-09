@@ -3,17 +3,18 @@
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
-import { formatedTimestamp } from "~/utils/time-picker-utils";
 import { AddTaskButton } from "./add-task-button";
+import { formatedTimestamp, truncateTaskTitle } from "~/utils/strings";
 
 export interface TaskListProps {
   tasks: Task[];
+  spaces: Space[];
 }
 
 export interface Task {
   id: number;
   title: string;
-  space: string;
+  space_id: number;
   description: string | null;
   priority: "low" | "medium" | "high";
   startAt: Date;
@@ -25,7 +26,16 @@ export interface Task {
   updatedAt: Date | null;
 }
 
-export function AllTasksList({ tasks }: TaskListProps) {
+export interface Space {
+  id: number;
+  userId: string;
+  name: string;
+  color: "red" | "green" | "blue" | "yellow" | "purple";
+  createdAt: Date;
+  updatedAt: Date | null;
+}
+
+export function AllTasksList({ tasks, spaces }: TaskListProps) {
   const toggleTask = (id: number) => {
     {
       /* TODO: Toggle task finished */
@@ -38,9 +48,10 @@ export function AllTasksList({ tasks }: TaskListProps) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <span>All Tasks</span>
-          <AddTaskButton />
+          <AddTaskButton spaces={spaces} />
         </div>
       </CardHeader>
+
       <CardContent>
         <div className="space-y-4">
           {tasks.map((task) => (
@@ -55,7 +66,13 @@ export function AllTasksList({ tasks }: TaskListProps) {
                 htmlFor={`all-${task.id}`}
                 className={`flex-grow ${task.isComplete ? "text-muted-foreground line-through" : ""}`}
               >
-                {task.title}
+                <span className="md:hidden">
+                  {truncateTaskTitle(task.title, 20)}
+                </span>
+
+                <span className="hidden md:flex">
+                  {truncateTaskTitle(task.title, 45)}
+                </span>
               </Label>
 
               <span className="text-sm text-muted-foreground">
@@ -75,7 +92,7 @@ export function AllTasksList({ tasks }: TaskListProps) {
               </span>
 
               <span className={`rounded-full px-2 py-1 text-sm`}>
-                {task.space}
+                {task.space_id}
               </span>
             </div>
           ))}

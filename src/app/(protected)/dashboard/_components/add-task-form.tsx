@@ -35,8 +35,13 @@ import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
 import { createTaskAction } from "~/server/actions/actions";
 import { addTaskSchema } from "~/server/actions/schemas";
+import { Space } from "./all-tasks-list";
 
-export function AddTaskForm() {
+export interface AddTaskFormProps {
+  spaces: Space[];
+}
+
+export function AddTaskForm({ spaces }: AddTaskFormProps) {
   const closeButton = useRef<HTMLButtonElement>(null);
 
   const form = useForm<z.infer<typeof addTaskSchema>>({
@@ -53,9 +58,7 @@ export function AddTaskForm() {
   });
 
   async function onSubmit(data: z.infer<typeof addTaskSchema>) {
-    console.log(data);
-
-    await createTaskAction({
+    const values = {
       title: data.title,
       space: data.space,
       description: data.description,
@@ -63,10 +66,15 @@ export function AddTaskForm() {
       startAt: data.startAt,
       endAt: data.endAt,
       recurrent: data.recurrent,
-    });
+    };
 
-    form.reset();
-    closeButton.current?.click();
+    try {
+      form.reset();
+      await createTaskAction(values);
+      closeButton.current?.click();
+    } catch (error) {
+      console.error("Task creation failed", error);
+    }
   }
 
   return (
@@ -100,13 +108,11 @@ export function AddTaskForm() {
                 </FormControl>
 
                 <SelectContent>
-                  {/* TODO: Add user spaces here */}
-                  <SelectItem key={"personal"} value={"personal"}>
-                    Personal
-                  </SelectItem>
-                  <SelectItem key={"work"} value={"work"}>
-                    Work
-                  </SelectItem>
+                  {spaces.map((space) => (
+                    <SelectItem key={space.name} value={space.name}>
+                      {space.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </FormItem>
