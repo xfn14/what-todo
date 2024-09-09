@@ -1,5 +1,6 @@
 import { getMyTasks } from "~/server/queries";
 import { AddTaskButton } from "./_components/add-task-button";
+import { TasksList } from "./_components/tasks-list";
 
 const DashboardPage = async () => {
   const tasks = await getMyTasks();
@@ -11,11 +12,7 @@ const DashboardPage = async () => {
 
         <AddTaskButton />
 
-        <ul>
-          {tasks.map((task) => (
-            <li key={task.id}>{task.title}</li>
-          ))}
-        </ul>
+        <TasksList tasks={tasks} />
       </div>
     </div>
   );
