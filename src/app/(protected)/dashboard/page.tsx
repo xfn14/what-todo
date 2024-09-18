@@ -21,7 +21,8 @@ const DashboardPage = async () => {
 
         {spaces.length === 0 ? (
           <div className="text-muted-foreground">
-            You don't have any spaces yet. Create one to start adding tasks.
+            You don&apos;t have any spaces yet. Create one to start adding
+            tasks.
           </div>
         ) : (
           <AllTasksList tasks={tasks} spaces={spaces} />

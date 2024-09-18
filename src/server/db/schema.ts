@@ -51,7 +51,7 @@ export const tasks = createTable("tasks", {
   title: varchar("name", { length: 256 }).notNull(),
   space_id: integer("space_id")
     .notNull()
-    .references(() => spaces.id),
+    .references(() => spaces.id, { onDelete: "cascade" }),
   description: varchar("description", { length: 1024 }),
   isComplete: boolean("is_complete").default(false).notNull(),
   priority: taskPriorityEnum("priority").default("low").notNull(),
