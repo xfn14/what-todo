@@ -14,7 +14,7 @@ import {
 import { Input } from "~/components/ui/input";
 import { createSpaceAction } from "~/server/actions/actions";
 import { addSpaceSchema } from "~/server/actions/schemas";
-import { Space } from "./all-tasks-list";
+import { Space } from "~/types";
 import {
   Select,
   SelectContent,

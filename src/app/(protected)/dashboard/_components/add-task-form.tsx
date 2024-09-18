@@ -35,7 +35,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
 import { createTaskAction } from "~/server/actions/actions";
 import { addTaskSchema } from "~/server/actions/schemas";
-import { Space } from "./all-tasks-list";
+import { Space } from "~/types";
 
 export interface AddTaskFormProps {
   spaces: Space[];

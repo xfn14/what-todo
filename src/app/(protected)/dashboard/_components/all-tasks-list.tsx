@@ -7,34 +7,11 @@ import { AddTaskButton } from "./add-task-button";
 import { formatedTimestamp, truncateTaskTitle } from "~/utils/strings";
 import { cn } from "~/lib/utils";
 import { colorClasses } from "~/server/db/schema";
+import { Space, Task } from "~/types";
 
 export interface TaskListProps {
   tasks: Task[];
   spaces: Space[];
-}
-
-export interface Task {
-  id: number;
-  title: string;
-  space_id: number;
-  description: string | null;
-  priority: "low" | "medium" | "high";
-  startAt: Date;
-  endAt: Date | null;
-  userId: string;
-  isComplete: boolean;
-  recurrency: string | null;
-  createdAt: Date;
-  updatedAt: Date | null;
-}
-
-export interface Space {
-  id: number;
-  userId: string;
-  name: string;
-  color: "red" | "green" | "blue" | "yellow" | "purple";
-  createdAt: Date;
-  updatedAt: Date | null;
 }
 
 export function AllTasksList({ tasks, spaces }: TaskListProps) {
