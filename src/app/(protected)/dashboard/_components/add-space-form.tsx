@@ -24,7 +24,8 @@ import {
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import { DialogClose } from "~/components/ui/dialog";
-import { spaceColor } from "~/server/db/schema";
+import { colorClasses, spaceColor } from "~/server/db/schema";
+import { cn } from "~/lib/utils";
 
 export interface AddSpaceFormProps {
   parentlessSpaces: Space[];
@@ -102,11 +103,20 @@ export function AddSpaceForm({ parentlessSpaces }: AddSpaceFormProps) {
                 </FormControl>
 
                 <SelectContent>
-                  {spaceColor.map((color) => (
-                    <SelectItem key={color as string} value={color as string}>
-                      {color.charAt(0).toUpperCase() + color.slice(1)}
-                    </SelectItem>
-                  ))}
+                  {spaceColor.map((color) => {
+                    const colorClass = colorClasses[color];
+
+                    return (
+                      <SelectItem key={color as string} value={color as string}>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={cn(`h-4 w-4 rounded-full`, colorClass)}
+                          />
+                          {color.charAt(0).toUpperCase() + color.slice(1)}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </FormItem>

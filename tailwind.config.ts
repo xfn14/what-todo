@@ -4,6 +4,19 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 export default {
   darkMode: ["class"],
   content: ["./src/**/*.tsx"],
+  safelist: [
+    // Space colors
+    "bg-red-800",
+    "text-red-800",
+    "bg-green-800",
+    "text-green-800",
+    "bg-blue-800",
+    "text-blue-800",
+    "bg-yellow-800",
+    "text-yellow-800",
+    "bg-purple-800",
+    "text-purple-800",
+  ],
   theme: {
     extend: {
       fontFamily: {

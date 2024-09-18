@@ -7,11 +7,11 @@ const DashboardPage = async () => {
   const spaces = await getMySpaces();
 
   return (
-    <main className="mt-8 flex w-full justify-center">
-      <div className="flex flex-col">
-        <div className="mb-2 flex items-center justify-between p-2">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
+    <main className="mt-2 flex w-full flex-col justify-center px-6 py-2">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
 
+      <div className="my-2 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
           <AddSpaceButton
             parentlessSpaces={spaces.filter(
               (space) => space.parent_space == -1,
@@ -19,7 +19,13 @@ const DashboardPage = async () => {
           />
         </div>
 
-        <AllTasksList tasks={tasks} spaces={spaces} />
+        {spaces.length === 0 ? (
+          <div className="text-muted-foreground">
+            You don't have any spaces yet. Create one to start adding tasks.
+          </div>
+        ) : (
+          <AllTasksList tasks={tasks} spaces={spaces} />
+        )}
       </div>
     </main>
   );

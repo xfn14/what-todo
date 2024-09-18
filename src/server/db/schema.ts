@@ -12,6 +12,13 @@ import {
 export const createTable = pgTableCreator((name) => `t3-what-todo_${name}`);
 
 export const spaceColor = ["red", "green", "blue", "yellow", "purple"] as const;
+export const colorClasses = {
+  red: "bg-red-800 text-red-300",
+  green: "bg-green-800 text-green-300",
+  blue: "bg-blue-800 text-blue-300",
+  yellow: "bg-yellow-800 text-yellow-300",
+  purple: "bg-purple-800 text-purple-300",
+};
 export const spaceColorEnum = pgEnum("color", spaceColor);
 
 export const spaces = createTable("spaces", {

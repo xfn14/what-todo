@@ -5,6 +5,8 @@ import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
 import { AddTaskButton } from "./add-task-button";
 import { formatedTimestamp, truncateTaskTitle } from "~/utils/strings";
+import { cn } from "~/lib/utils";
+import { colorClasses } from "~/server/db/schema";
 
 export interface TaskListProps {
   tasks: Task[];
@@ -54,49 +56,60 @@ export function AllTasksList({ tasks, spaces }: TaskListProps) {
 
       <CardContent>
         <div className="space-y-4">
-          {tasks.map((task) => (
-            <div key={task.id} className="flex items-center space-x-2">
-              <Checkbox
-                id={`all-${task.id}`}
-                checked={task.isComplete}
-                onCheckedChange={() => toggleTask(task.id)}
-              />
+          {tasks.map((task) => {
+            const space = spaces.find((space) => space.id === task.space_id);
+            const truncatedTitle = truncateTaskTitle(task.title, 45);
+            const colorClass = space ? colorClasses[space.color] : "";
 
-              <Label
-                htmlFor={`all-${task.id}`}
-                className={`flex-grow ${task.isComplete ? "text-muted-foreground line-through" : ""}`}
-              >
-                <span className="md:hidden">
-                  {truncateTaskTitle(task.title, 20)}
+            return (
+              <div key={task.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`all-${task.id}`}
+                  checked={task.isComplete}
+                  onCheckedChange={() => toggleTask(task.id)}
+                />
+
+                <Label
+                  htmlFor={`all-${task.id}`}
+                  className={`flex-grow ${
+                    task.isComplete ? "text-muted-foreground line-through" : ""
+                  }`}
+                >
+                  <span className="md:hidden">
+                    {truncateTaskTitle(task.title, 20)}
+                  </span>
+
+                  <span className="hidden md:flex">{truncatedTitle}</span>
+                </Label>
+
+                <span className="text-sm text-muted-foreground">
+                  {formatedTimestamp(task.startAt)}
                 </span>
 
-                <span className="hidden md:flex">
-                  {truncateTaskTitle(task.title, 45)}
+                <span
+                  className={cn("rounded-full px-2 py-1 text-sm", {
+                    "bg-red-100 text-red-800": task.priority === "high",
+                    "bg-yellow-100 text-yellow-800": task.priority === "medium",
+                    "bg-green-100 text-green-800": task.priority === "low",
+                  })}
+                >
+                  {task.priority}
                 </span>
-              </Label>
 
-              <span className="text-sm text-muted-foreground">
-                {formatedTimestamp(task.startAt)}
-              </span>
-
-              <span
-                className={`rounded-full px-2 py-1 text-sm ${
-                  task.priority === "high"
-                    ? "bg-red-100 text-red-800"
-                    : task.priority === "medium"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-green-100 text-green-800"
-                }`}
-              >
-                {task.priority}
-              </span>
-
-              <span className={`rounded-full px-2 py-1 text-sm`}>
-                {spaces.find((space) => space.id === task.space_id)?.name ??
-                  "Error finding space"}
-              </span>
-            </div>
-          ))}
+                {space ? (
+                  <span
+                    className={cn("rounded-full px-2 py-1 text-sm", colorClass)}
+                  >
+                    {space.name}
+                  </span>
+                ) : (
+                  <span className="text-sm text-red-500">
+                    Error finding space
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>
