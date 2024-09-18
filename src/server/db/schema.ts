@@ -1,12 +1,12 @@
 import { relations, sql } from "drizzle-orm";
 import {
-  boolean,
-  integer,
-  pgEnum,
   pgTableCreator,
+  pgEnum,
   serial,
-  timestamp,
   varchar,
+  integer,
+  boolean,
+  timestamp,
 } from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator((name) => `t3-what-todo_${name}`);
@@ -20,6 +20,7 @@ export const spaces = createTable("spaces", {
 
   name: varchar("name", { length: 256 }).notNull(),
   color: spaceColorEnum("color").default("red").notNull(),
+  parent_space: integer("parent_space").default(-1),
 
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)

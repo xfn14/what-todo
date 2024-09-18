@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { TimePickerDemo } from "~/components/time-picker-demo";
@@ -43,6 +43,7 @@ export interface AddTaskFormProps {
 
 export function AddTaskForm({ spaces }: AddTaskFormProps) {
   const closeButton = useRef<HTMLButtonElement>(null);
+  const [disabled, setDisabled] = useState(false);
 
   const form = useForm<z.infer<typeof addTaskSchema>>({
     resolver: zodResolver(addTaskSchema),
@@ -58,6 +59,7 @@ export function AddTaskForm({ spaces }: AddTaskFormProps) {
   });
 
   async function onSubmit(data: z.infer<typeof addTaskSchema>) {
+    setDisabled(true);
     const values = {
       title: data.title,
       space: data.space,
@@ -71,9 +73,11 @@ export function AddTaskForm({ spaces }: AddTaskFormProps) {
     try {
       form.reset();
       await createTaskAction(values);
-      closeButton.current?.click();
     } catch (error) {
       console.error("Task creation failed", error);
+    } finally {
+      setDisabled(false);
+      closeButton.current?.click();
     }
   }
 
@@ -272,7 +276,7 @@ export function AddTaskForm({ spaces }: AddTaskFormProps) {
           )}
         />
 
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={disabled}>
           Create Task
         </Button>
 

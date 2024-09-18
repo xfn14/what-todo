@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { spaceColor } from "../db/schema";
 
 export const addTaskSchema = z.object({
   title: z.string().min(1),
@@ -8,4 +9,10 @@ export const addTaskSchema = z.object({
   startAt: z.date(),
   endAt: z.date().optional(),
   recurrent: z.boolean().default(false).optional(),
+});
+
+export const addSpaceSchema = z.object({
+  name: z.string().min(1).max(16),
+  color: z.enum(spaceColor).default("red"),
+  parent_space: z.string().default(""),
 });
