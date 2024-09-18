@@ -34,6 +34,7 @@ export function AddSpaceForm({ parentlessSpaces }: AddSpaceFormProps) {
   console.log(parentlessSpaces);
   const closeButton = useRef<HTMLButtonElement>(null);
   const [disabled, setDisabled] = useState(false);
+  const [resMessage, setResMessage] = useState("");
 
   const form = useForm<z.infer<typeof addSpaceSchema>>({
     resolver: zodResolver(addSpaceSchema),
@@ -46,20 +47,27 @@ export function AddSpaceForm({ parentlessSpaces }: AddSpaceFormProps) {
 
   async function onSubmit(data: z.infer<typeof addSpaceSchema>) {
     setDisabled(true);
+    setResMessage("");
+
     const values = {
       name: data.name,
       color: data.color,
       parent_space: data.parent_space,
     };
 
+    let res = undefined;
+
     try {
       form.reset();
-      await createSpaceAction(values);
-    } catch (error) {
-      console.error("Task creation failed", error);
+      res = await createSpaceAction(values);
     } finally {
+      if (res) {
+        setResMessage(res[0] ?? "");
+        console.log(res);
+      } else {
+        closeButton.current?.click();
+      }
       setDisabled(false);
-      closeButton.current?.click();
     }
   }
 
@@ -130,6 +138,8 @@ export function AddSpaceForm({ parentlessSpaces }: AddSpaceFormProps) {
             </FormItem>
           )}
         />
+
+        {resMessage && <div className="text-sm text-red-500">{resMessage}</div>}
 
         <Button type="submit" className="w-full" disabled={disabled}>
           Create Space

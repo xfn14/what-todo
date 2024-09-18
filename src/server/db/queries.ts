@@ -7,6 +7,7 @@ import { z } from "zod";
 import { addSpaceSchema, addTaskSchema } from "../actions/schemas";
 import { db } from ".";
 import { spaces, tasks } from "./schema";
+import { getErrorMessage } from "~/utils/strings";
 
 export async function getMyTasks() {
   const user = auth();
@@ -82,6 +83,8 @@ export async function createSpace(data: z.infer<typeof addSpaceSchema>) {
 
   if (!user.userId) throw new Error("User not authenticated");
 
+  let redi = true;
+
   try {
     const space = await getSpaceByName(data.name);
 
@@ -105,8 +108,11 @@ export async function createSpace(data: z.infer<typeof addSpaceSchema>) {
       });
     }
   } catch (error) {
-    return error;
+    redi = false;
+    return getErrorMessage(error);
   } finally {
-    redirect("/dashboard");
+    if (redi) {
+      redirect("/dashboard");
+    }
   }
 }

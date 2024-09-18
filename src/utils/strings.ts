@@ -10,3 +10,8 @@ export const formatedTimestamp = (d: Date) => {
   const time = d.toTimeString().split(" ")[0];
   return `${date} ${time}`;
 };
+
+export function getErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
