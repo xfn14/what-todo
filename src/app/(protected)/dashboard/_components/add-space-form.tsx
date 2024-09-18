@@ -32,7 +32,6 @@ export interface AddSpaceFormProps {
 }
 
 export function AddSpaceForm({ parentlessSpaces }: AddSpaceFormProps) {
-  console.log(parentlessSpaces);
   const closeButton = useRef<HTMLButtonElement>(null);
   const [disabled, setDisabled] = useState(false);
   const [resMessage, setResMessage] = useState("");
@@ -50,21 +49,18 @@ export function AddSpaceForm({ parentlessSpaces }: AddSpaceFormProps) {
     setDisabled(true);
     setResMessage("");
 
-    const values = {
-      name: data.name,
-      color: data.color,
-      parent_space: data.parent_space,
-    };
-
     let res = undefined;
 
     try {
       form.reset();
-      res = await createSpaceAction(values);
+      res = await createSpaceAction({
+        name: data.name,
+        color: data.color,
+        parent_space: data.parent_space,
+      });
     } finally {
       if (res) {
         setResMessage(res[0] ?? "");
-        console.log(res);
       } else {
         closeButton.current?.click();
       }

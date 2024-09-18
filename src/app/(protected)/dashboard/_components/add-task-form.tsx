@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import router from "next/router";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -60,19 +61,18 @@ export function AddTaskForm({ spaces }: AddTaskFormProps) {
 
   async function onSubmit(data: z.infer<typeof addTaskSchema>) {
     setDisabled(true);
-    const values = {
-      title: data.title,
-      space: data.space,
-      description: data.description,
-      priority: data.priority,
-      startAt: data.startAt,
-      endAt: data.endAt,
-      recurrent: data.recurrent,
-    };
 
     try {
       form.reset();
-      await createTaskAction(values);
+      await createTaskAction({
+        title: data.title,
+        space: data.space,
+        description: data.description,
+        priority: data.priority,
+        startAt: data.startAt,
+        endAt: data.endAt,
+        recurrent: data.recurrent,
+      });
     } catch (error) {
       console.error("Task creation failed", error);
     } finally {

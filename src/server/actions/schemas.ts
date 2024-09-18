@@ -16,3 +16,7 @@ export const addSpaceSchema = z.object({
   color: z.enum(spaceColor).default("red"),
   parent_space: z.string().default(""),
 });
+
+export const toggleTasksCompletionSchema = z.object({
+  taskId: z.number(),
+});

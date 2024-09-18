@@ -1,13 +1,18 @@
 import "server-only";
 
 import { auth } from "@clerk/nextjs/server";
-import { and } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { addSpaceSchema, addTaskSchema } from "../actions/schemas";
+import {
+  addSpaceSchema,
+  addTaskSchema,
+  toggleTasksCompletionSchema,
+} from "../actions/schemas";
 import { db } from ".";
 import { spaces, tasks } from "./schema";
 import { getErrorMessage } from "~/utils/strings";
+import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function getMyTasks() {
   const user = auth();
@@ -50,7 +55,7 @@ export async function getSpaceByName(space: string) {
   if (!user.userId) throw new Error("User not authenticated");
 
   return await db.query.spaces.findFirst({
-    where: (model, { eq }) =>
+    where: (model, { eq, and }) =>
       and(eq(model.userId, user.userId), eq(model.name, space)),
   });
 }
@@ -61,7 +66,7 @@ export async function getSpaceById(space: number) {
   if (!user.userId) throw new Error("User not authenticated");
 
   return await db.query.spaces.findFirst({
-    where: (model, { eq }) =>
+    where: (model, { eq, and }) =>
       and(eq(model.userId, user.userId), eq(model.id, space)),
   });
 }
@@ -78,7 +83,6 @@ export async function getMySpaces() {
 }
 
 export async function createSpace(data: z.infer<typeof addSpaceSchema>) {
-  console.log(data);
   const user = auth();
 
   if (!user.userId) throw new Error("User not authenticated");
@@ -115,4 +119,43 @@ export async function createSpace(data: z.infer<typeof addSpaceSchema>) {
       redirect("/dashboard");
     }
   }
+}
+
+export async function deleteTask(id: number) {
+  const user = auth();
+
+  if (!user.userId) throw new Error("User not authenticated");
+
+  await db
+    .delete(tasks)
+    .where(and(eq(tasks.userId, user.userId), eq(tasks.id, id)));
+}
+
+export async function deleteSpace(id: number) {
+  const user = auth();
+
+  if (!user.userId) throw new Error("User not authenticated");
+
+  await db
+    .delete(spaces)
+    .where(and(eq(spaces.userId, user.userId), eq(spaces.id, id)));
+}
+
+export async function toggleTaskCompletion(
+  data: z.infer<typeof toggleTasksCompletionSchema>,
+) {
+  const user = auth();
+
+  if (!user.userId) throw new Error("User not authenticated");
+
+  const task = await db.query.tasks.findFirst({
+    where: (model, { eq }) => eq(model.id, data.taskId),
+  });
+
+  if (!task) throw new Error("Task not found");
+
+  await db
+    .update(tasks)
+    .set({ isComplete: !task.isComplete })
+    .where(and(eq(tasks.userId, user.userId), eq(tasks.id, data.taskId)));
 }

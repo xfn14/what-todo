@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
@@ -8,18 +9,37 @@ import { formatedTimestamp, truncateTaskTitle } from "~/utils/strings";
 import { cn } from "~/lib/utils";
 import { colorClasses } from "~/server/db/schema";
 import { Space, Task } from "~/types";
+import { toggleTasksCompletionAction } from "~/server/actions/actions";
 
 export interface TaskListProps {
   tasks: Task[];
   spaces: Space[];
 }
 
-export function AllTasksList({ tasks, spaces }: TaskListProps) {
-  const toggleTask = (id: number) => {
-    {
-      /* TODO: Toggle task finished */
+export function AllTasksList({ tasks: initialTasks, spaces }: TaskListProps) {
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [disabeledTasks, setDisabledTasks] = useState<number[]>([]);
+
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
+
+  const toggleTask = async (id: number) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, isComplete: !task.isComplete } : task,
+      ),
+    );
+
+    if (disabeledTasks.includes(id)) {
+      setDisabledTasks((prev) => prev.filter((taskId) => taskId !== id));
+    } else {
+      setDisabledTasks((prev) => [...prev, id]);
     }
-    console.log(`Toggle task ${id}`);
+
+    await toggleTasksCompletionAction({ taskId: id });
+
+    setDisabledTasks((prev) => prev.filter((taskId) => taskId !== id));
   };
 
   return (
@@ -44,6 +64,7 @@ export function AllTasksList({ tasks, spaces }: TaskListProps) {
                   id={`all-${task.id}`}
                   checked={task.isComplete}
                   onCheckedChange={() => toggleTask(task.id)}
+                  disabled={disabeledTasks.includes(task.id)}
                 />
 
                 <Label
