@@ -1,7 +1,7 @@
 import { getMySpaces, getMyTasks } from "~/server/db/queries";
-import { AllTasksList } from "./_components/all-tasks-list";
 import { AddSpaceButton } from "./_components/add-space-button";
 import { SelectSpaceMenu } from "./_components/select-space-menu";
+import { TasksListWrapper } from "./_components/tasks-list-wrapper";
 
 const DashboardPage = async () => {
   const tasks = await getMyTasks();
@@ -24,7 +24,7 @@ const DashboardPage = async () => {
             tasks.
           </div>
         ) : (
-          <AllTasksList tasks={tasks} spaces={spaces} />
+          <TasksListWrapper initialTasks={tasks} spaces={spaces} />
         )}
       </div>
     </main>

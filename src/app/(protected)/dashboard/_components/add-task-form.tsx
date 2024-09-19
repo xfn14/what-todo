@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import router from "next/router";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -221,7 +220,7 @@ export function AddTaskForm({ spaces }: AddTaskFormProps) {
           name="endAt"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel className="text-left">Start Time</FormLabel>
+              <FormLabel className="text-left">End Time</FormLabel>
               <Popover>
                 <FormControl>
                   <PopoverTrigger asChild>
