@@ -17,6 +17,7 @@ import { colorClasses } from "~/server/db/schema";
 import { Space, Task } from "~/types";
 import { formatedTimestamp, truncateTaskTitle } from "~/utils/strings";
 import { AddTaskButton } from "./add-task-button";
+import { ArrowDown, ArrowUp } from "lucide-react";
 
 export interface TaskListProps {
   tasks: Task[];
@@ -34,6 +35,7 @@ export function AllTasksList({ tasks: initialTasks, spaces }: TaskListProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [disabeledTasks, setDisabledTasks] = useState<number[]>([]);
   const [sortCriterion, setSortCriterion] = useState<string>("createdAt");
+  const [isAscending, setIsAscending] = useState<boolean>(false);
 
   useEffect(() => {
     setTasks(initialTasks);
@@ -45,7 +47,7 @@ export function AllTasksList({ tasks: initialTasks, spaces }: TaskListProps) {
   };
 
   const sortTasks = (tasksToSort: Task[]) => {
-    return [...tasksToSort].sort((a, b) => {
+    const sorted = [...tasksToSort].sort((a, b) => {
       switch (sortCriterion) {
         case "createdAt":
           return (
@@ -62,6 +64,8 @@ export function AllTasksList({ tasks: initialTasks, spaces }: TaskListProps) {
           return 0;
       }
     });
+
+    return isAscending ? sorted : sorted.reverse();
   };
 
   const sortedTasks = sortTasks(tasks);
@@ -93,12 +97,10 @@ export function AllTasksList({ tasks: initialTasks, spaces }: TaskListProps) {
             <AddTaskButton spaces={spaces} />
           </div>
 
-          <div className="flex flex-col items-start gap-1 text-xs">
-            <label htmlFor="sort ">Sort by:</label>
-
+          <div className="flex justify-end gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-32">
+                <Button variant="outline" className="w-32" id="sort_by">
                   {getLabelForSortCriterion(sortCriterion)}
                 </Button>
               </DropdownMenuTrigger>
@@ -113,6 +115,19 @@ export function AllTasksList({ tasks: initialTasks, spaces }: TaskListProps) {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <Button
+              id="order_by"
+              size={"icon"}
+              variant={"outline"}
+              onClick={() => setIsAscending((prev) => !prev)}
+            >
+              {isAscending ? (
+                <ArrowUp className="h-4 w-4" />
+              ) : (
+                <ArrowDown className="h-4 w-4" />
+              )}
+            </Button>
           </div>
         </div>
       </CardHeader>
