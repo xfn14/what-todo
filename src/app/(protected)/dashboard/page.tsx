@@ -14,7 +14,11 @@ const DashboardPage = () => {
     initTasks();
   }, [initSpaces, initTasks]);
 
-  return <Dashboard />;
+  return (
+    <main className="mt-2 flex w-full flex-col px-6 py-2">
+      <Dashboard />
+    </main>
+  );
 };
 
 export default DashboardPage;

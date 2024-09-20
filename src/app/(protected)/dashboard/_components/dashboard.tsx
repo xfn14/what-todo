@@ -1,21 +1,16 @@
 "use client";
 
 import { useSpacesStore } from "~/stores/spaces-store";
-import type { Space, Task } from "~/types";
 import { AddSpaceButton } from "./add-space-button";
 import { SelectSpaceMenu } from "./select-space-menu";
 import { TasksListTabs } from "./tasks-list-tabs";
-
-export interface DashboardProps {
-  tasks: Task[];
-  spaces: Space[];
-}
+import TasksStats from "./tasks-stats";
 
 const Dashboard = () => {
   const spaces = useSpacesStore((state) => state.spaces);
 
   return (
-    <main className="mt-2 flex w-full flex-col justify-center px-6 py-2">
+    <>
       <div className="mb-2 flex items-center gap-4">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <AddSpaceButton />
@@ -23,6 +18,8 @@ const Dashboard = () => {
 
       <div className="my-2 flex flex-col gap-4">
         <SelectSpaceMenu />
+
+        <TasksStats />
 
         {spaces.length === 0 ? (
           <div className="text-muted-foreground">
@@ -33,7 +30,7 @@ const Dashboard = () => {
           <TasksListTabs />
         )}
       </div>
-    </main>
+    </>
   );
 };
 
