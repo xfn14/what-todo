@@ -5,8 +5,10 @@ import { AddSpaceButton } from "./add-space-button";
 import { SelectSpaceMenu } from "./select-space-menu";
 import { TasksListTabs } from "./tasks-list-tabs";
 import TasksStats from "./tasks-stats";
+import { useTasksStore } from "~/stores/tasks-store";
 
 const Dashboard = () => {
+  const tasks = useTasksStore((state) => state.tasks);
   const spaces = useSpacesStore((state) => state.spaces);
 
   return (
@@ -19,7 +21,7 @@ const Dashboard = () => {
       <div className="my-2 flex flex-col gap-4">
         <SelectSpaceMenu />
 
-        <TasksStats />
+        {spaces.length > 0 && tasks.length > 0 && <TasksStats />}
 
         {spaces.length === 0 ? (
           <div className="text-muted-foreground">
