@@ -1,11 +1,11 @@
 import "~/styles/globals.css";
 
-import { GeistSans } from "geist/font/sans";
-import { type Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import { inter, bogart, lora, source } from "~/utils/fonts";
+import { GeistSans } from "geist/font/sans";
+import type { Metadata } from "next";
 import { ThemeProvider } from "~/components/theme-provider";
+import { bogart, inter, lora, source } from "~/utils/fonts";
 
 export const metadata: Metadata = {
   title: "What-Todo",

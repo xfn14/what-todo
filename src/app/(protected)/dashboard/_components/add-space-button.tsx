@@ -10,7 +10,6 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { AddSpaceForm } from "./add-space-form";
-import { Space } from "~/types";
 
 export function AddSpaceButton() {
   return (

@@ -10,7 +10,6 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { AddTaskForm } from "./add-task-form";
-import { Space, Task } from "~/types";
 
 export function AddTaskButton() {
   return (

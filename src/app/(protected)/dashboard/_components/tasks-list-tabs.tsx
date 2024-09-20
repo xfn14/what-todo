@@ -5,7 +5,7 @@ import { TasksList } from "./tasks-list";
 
 export function TasksListTabs() {
   return (
-    <Tabs defaultValue="all_tasks">
+    <Tabs defaultValue="todays_tasks">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="all_tasks">All tasks</TabsTrigger>
         <TabsTrigger value="todays_tasks">Today&apos;s tasks</TabsTrigger>

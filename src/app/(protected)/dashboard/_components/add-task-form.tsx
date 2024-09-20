@@ -37,7 +37,7 @@ import { createTaskAction } from "~/server/actions/actions";
 import { addTaskSchema } from "~/server/actions/schemas";
 import { useSpacesStore } from "~/stores/spaces-store";
 import { useTasksStore } from "~/stores/tasks-store";
-import { Task } from "~/types";
+import type { Task } from "~/types";
 
 export function AddTaskForm() {
   const spaces = useSpacesStore((state) => state.spaces);

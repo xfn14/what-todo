@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-import { useTasksStore } from "~/stores/tasks-store";
-import { Space, Task } from "~/types";
-import { TasksListTabs } from "./tasks-list-tabs";
+import { useSpacesStore } from "~/stores/spaces-store";
+import type { Space, Task } from "~/types";
 import { AddSpaceButton } from "./add-space-button";
 import { SelectSpaceMenu } from "./select-space-menu";
-import { useSpacesStore } from "~/stores/spaces-store";
+import { TasksListTabs } from "./tasks-list-tabs";
 
 export interface DashboardProps {
   tasks: Task[];

@@ -1,6 +1,7 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -14,12 +15,11 @@ import { Label } from "~/components/ui/label";
 import { cn } from "~/lib/utils";
 import { toggleTasksCompletionAction } from "~/server/actions/actions";
 import { colorClasses } from "~/server/db/schema";
-import { Space, Task } from "~/types";
+import { useSpacesStore } from "~/stores/spaces-store";
+import { useTasksStore } from "~/stores/tasks-store";
+import type { Task } from "~/types";
 import { formatedTimestamp, truncateTaskTitle } from "~/utils/strings";
 import { AddTaskButton } from "./add-task-button";
-import { ArrowDown, ArrowUp } from "lucide-react";
-import { useTasksStore } from "~/stores/tasks-store";
-import { useSpacesStore } from "~/stores/spaces-store";
 
 export interface TaskListProps {
   type: string;
@@ -35,6 +35,7 @@ const sortOptions = [
 export function TasksList({ type }: TaskListProps) {
   const tasks = useTasksStore((state) => state.tasks);
   const updateTask = useTasksStore((state) => state.updateTask);
+  const getTodaysTasks = useTasksStore((state) => state.getTodaysTasks);
   const spaces = useSpacesStore((state) => state.spaces);
 
   const title = type === "all_tasks" ? "All tasks" : "Today's tasks";
@@ -128,11 +129,14 @@ export function TasksList({ type }: TaskListProps) {
 
       <CardContent>
         <div className="space-y-4">
-          {sortTasks(tasks).length === 0 ? (
+          {sortTasks(type === "todays_tasks" ? getTodaysTasks() : tasks)
+            .length === 0 ? (
             <div className="text-muted-foreground">No tasks!</div>
           ) : (
             <>
-              {sortTasks(tasks).map((task) => {
+              {sortTasks(
+                type === "todays_tasks" ? getTodaysTasks() : tasks,
+              ).map((task) => {
                 const space = spaces.find(
                   (space) => space.id === task.space_id,
                 );

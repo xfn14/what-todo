@@ -2,13 +2,12 @@
 
 import {
   Menubar,
-  MenubarMenu,
-  MenubarTrigger,
   MenubarContent,
   MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
 } from "~/components/ui/menubar";
 import { useSpacesStore } from "~/stores/spaces-store";
-import { Space } from "~/types";
 
 export function SelectSpaceMenu() {
   const spaces = useSpacesStore((state) => state.spaces);

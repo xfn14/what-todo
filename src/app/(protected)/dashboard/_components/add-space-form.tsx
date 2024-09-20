@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Button } from "~/components/ui/button";
+import { DialogClose } from "~/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -12,9 +14,6 @@ import {
   FormLabel,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { createSpaceAction } from "~/server/actions/actions";
-import { addSpaceSchema } from "~/server/actions/schemas";
-import { Space } from "~/types";
 import {
   Select,
   SelectContent,
@@ -22,11 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { Button } from "~/components/ui/button";
-import { DialogClose } from "~/components/ui/dialog";
-import { colorClasses, spaceColor } from "~/server/db/schema";
 import { cn } from "~/lib/utils";
+import { createSpaceAction } from "~/server/actions/actions";
+import { addSpaceSchema } from "~/server/actions/schemas";
+import { colorClasses, spaceColor } from "~/server/db/schema";
 import { useSpacesStore } from "~/stores/spaces-store";
+import type { Space } from "~/types";
 
 export interface AddSpaceFormProps {
   parentlessSpaces: Space[];
