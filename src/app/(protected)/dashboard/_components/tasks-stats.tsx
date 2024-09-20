@@ -20,7 +20,7 @@ const TasksStats = () => {
 
     const spaceTaskCount: Record<number, number> = {};
     incompleteTasks.forEach((task) => {
-      spaceTaskCount[task.space_id] = (spaceTaskCount[task.space_id] || 0) + 1;
+      spaceTaskCount[task.space_id] = (spaceTaskCount[task.space_id] ?? 0) + 1;
     });
 
     let mostActiveSpaceId: number | null = null;
