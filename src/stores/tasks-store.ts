@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { getMyTasks } from "~/server/db/queries";
-import { Task } from "~/types";
+import type { Task } from "~/types";
 
 interface TasksState {
   tasks: Task[];
@@ -11,9 +11,14 @@ interface TasksState {
 
 export const useTasksStore = create<TasksState>((set, get) => ({
   tasks: [],
-  initTasks: async () => {
-    const fetchedTasks = await getMyTasks();
-    set({ tasks: fetchedTasks });
+  initTasks: () => {
+    getMyTasks()
+      .then((fetchedTasks) => {
+        set({ tasks: fetchedTasks });
+      })
+      .catch((error) => {
+        console.error("Failed to fetch tasks:", error);
+      });
   },
   updateTask: (task) => {
     set((state) => {

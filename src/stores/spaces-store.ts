@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { getMySpaces } from "~/server/db/queries";
-import { Space } from "~/types";
+import type { Space } from "~/types";
 
 interface SpacesState {
   spaces: Space[];
@@ -12,9 +12,14 @@ interface SpacesState {
 
 export const useSpacesStore = create<SpacesState>((set, get) => ({
   spaces: [],
-  initSpaces: async () => {
-    const fetchedSpaces = await getMySpaces();
-    set({ spaces: fetchedSpaces });
+  initSpaces: () => {
+    getMySpaces()
+      .then((fetchedSpaces) => {
+        set({ spaces: fetchedSpaces });
+      })
+      .catch((error) => {
+        console.error("Failed to fetch spaces:", error);
+      });
   },
   updateSpace: (space) => {
     set((state) => {
