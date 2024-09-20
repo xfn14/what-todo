@@ -12,11 +12,7 @@ import {
 import { AddSpaceForm } from "./add-space-form";
 import { Space } from "~/types";
 
-export interface AddSpaceButtonProps {
-  parentlessSpaces: Space[];
-}
-
-export function AddSpaceButton({ parentlessSpaces }: AddSpaceButtonProps) {
+export function AddSpaceButton() {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -36,7 +32,7 @@ export function AddSpaceButton({ parentlessSpaces }: AddSpaceButtonProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <AddSpaceForm parentlessSpaces={parentlessSpaces} />
+        <AddSpaceForm />
 
         <DialogFooter></DialogFooter>
       </DialogContent>

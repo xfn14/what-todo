@@ -10,13 +10,9 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { AddTaskForm } from "./add-task-form";
-import { Space } from "~/types";
+import { Space, Task } from "~/types";
 
-export interface AddTaskButtonProps {
-  spaces: Space[];
-}
-
-export function AddTaskButton({ spaces }: AddTaskButtonProps) {
+export function AddTaskButton() {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -36,7 +32,7 @@ export function AddTaskButton({ spaces }: AddTaskButtonProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <AddTaskForm spaces={spaces} />
+        <AddTaskForm />
 
         <DialogFooter></DialogFooter>
       </DialogContent>

@@ -27,7 +27,7 @@ export const spaces = createTable("spaces", {
 
   name: varchar("name", { length: 256 }).notNull(),
   color: spaceColorEnum("color").default("red").notNull(),
-  parent_space: integer("parent_space").default(-1),
+  parent_space: integer("parent_space").default(-1).notNull(),
 
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)

@@ -35,13 +35,14 @@ import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
 import { createTaskAction } from "~/server/actions/actions";
 import { addTaskSchema } from "~/server/actions/schemas";
-import { Space } from "~/types";
+import { useSpacesStore } from "~/stores/spaces-store";
+import { useTasksStore } from "~/stores/tasks-store";
+import { Task } from "~/types";
 
-export interface AddTaskFormProps {
-  spaces: Space[];
-}
+export function AddTaskForm() {
+  const spaces = useSpacesStore((state) => state.spaces);
+  const updateTask = useTasksStore((state) => state.updateTask);
 
-export function AddTaskForm({ spaces }: AddTaskFormProps) {
   const closeButton = useRef<HTMLButtonElement>(null);
   const [disabled, setDisabled] = useState(false);
 
@@ -59,11 +60,11 @@ export function AddTaskForm({ spaces }: AddTaskFormProps) {
   });
 
   async function onSubmit(data: z.infer<typeof addTaskSchema>) {
+    console.log("gooods");
     setDisabled(true);
 
     try {
-      form.reset();
-      await createTaskAction({
+      const [res, err] = await createTaskAction({
         title: data.title,
         space: data.space,
         description: data.description,
@@ -72,11 +73,20 @@ export function AddTaskForm({ spaces }: AddTaskFormProps) {
         endAt: data.endAt,
         recurrent: data.recurrent,
       });
+
+      if (err) {
+        console.error("Task creation failed due to an error", err);
+        return;
+      } else if (res) {
+        console.log("Task created successfully:", res);
+        updateTask(res[0] as Task);
+        form.reset();
+        closeButton.current?.click();
+      }
     } catch (error) {
-      console.error("Task creation failed", error);
+      console.error("Task creation failed due to an exception", error);
     } finally {
       setDisabled(false);
-      closeButton.current?.click();
     }
   }
 

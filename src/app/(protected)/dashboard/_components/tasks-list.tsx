@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -18,12 +18,11 @@ import { Space, Task } from "~/types";
 import { formatedTimestamp, truncateTaskTitle } from "~/utils/strings";
 import { AddTaskButton } from "./add-task-button";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { useTasksStore } from "~/stores/tasks-store";
+import { useSpacesStore } from "~/stores/spaces-store";
 
 export interface TaskListProps {
-  title: string;
-  tasks: Task[];
-  spaces: Space[];
-  onTaskUpdate: (task: Task) => void;
+  type: string;
 }
 
 const sortOptions = [
@@ -33,20 +32,15 @@ const sortOptions = [
   { value: "isComplete", label: "Is completed" },
 ];
 
-export function TasksList({
-  title,
-  tasks: initialTasks,
-  spaces,
-  onTaskUpdate,
-}: TaskListProps) {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+export function TasksList({ type }: TaskListProps) {
+  const tasks = useTasksStore((state) => state.tasks);
+  const updateTask = useTasksStore((state) => state.updateTask);
+  const spaces = useSpacesStore((state) => state.spaces);
+
+  const title = type === "all_tasks" ? "All tasks" : "Today's tasks";
   const [disabeledTasks, setDisabledTasks] = useState<number[]>([]);
   const [sortCriterion, setSortCriterion] = useState<string>("createdAt");
   const [isAscending, setIsAscending] = useState<boolean>(false);
-
-  useEffect(() => {
-    setTasks(initialTasks);
-  }, [initialTasks]);
 
   const getLabelForSortCriterion = (value: string) => {
     const option = sortOptions.find((option) => option.value === value);
@@ -75,46 +69,17 @@ export function TasksList({
     return isAscending ? sorted : sorted.reverse();
   };
 
-  const sortedTasks = sortTasks(tasks);
-
   const toggleTask = async (id: number) => {
     const updatedTask = tasks.find((task) => task.id === id);
     if (updatedTask) {
       updatedTask.isComplete = !updatedTask.isComplete;
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.id === id
-            ? { ...task, isComplete: updatedTask.isComplete }
-            : task,
-        ),
-      );
 
       setDisabledTasks((prev) => [...prev, id]);
       await toggleTasksCompletionAction({ taskId: id });
 
-      // Call the onTaskUpdate to sync with the parent
-      onTaskUpdate(updatedTask);
+      updateTask(updatedTask);
       setDisabledTasks((prev) => prev.filter((taskId) => taskId !== id));
     }
-    // const updatedTask = tasks.find((task) => task.id === id);
-    // if (!updatedTask) return;
-
-    // const newTask = { ...updatedTask, isComplete: !updatedTask.isComplete };
-
-    // setTasks((prevTasks) =>
-    //   prevTasks.map((task) =>
-    //     task.id === id ? { ...task, isComplete: !task.isComplete } : task,
-    //   ),
-    // );
-
-    // if (disabeledTasks.includes(id)) {
-    //   setDisabledTasks((prev) => prev.filter((taskId) => taskId !== id));
-    // } else {
-    //   setDisabledTasks((prev) => [...prev, id]);
-    // }
-    // setDisabledTasks((prev) => [...prev, id]);
-    // await toggleTasksCompletionAction({ taskId: id });
-    // onTaskUpdate(newTask);
   };
 
   return (
@@ -123,7 +88,7 @@ export function TasksList({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <span className="text-2xl font-bold">{title}</span>
-            <AddTaskButton spaces={spaces} />
+            <AddTaskButton />
           </div>
 
           <div className="flex justify-end gap-4">
@@ -163,11 +128,11 @@ export function TasksList({
 
       <CardContent>
         <div className="space-y-4">
-          {sortedTasks.length === 0 ? (
+          {sortTasks(tasks).length === 0 ? (
             <div className="text-muted-foreground">No tasks!</div>
           ) : (
             <>
-              {sortedTasks.map((task) => {
+              {sortTasks(tasks).map((task) => {
                 const space = spaces.find(
                   (space) => space.id === task.space_id,
                 );

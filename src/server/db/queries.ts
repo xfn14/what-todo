@@ -1,7 +1,6 @@
-import "server-only";
+"use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import {
   addSpaceSchema,
@@ -10,9 +9,7 @@ import {
 } from "../actions/schemas";
 import { db } from ".";
 import { spaces, tasks } from "./schema";
-import { getErrorMessage } from "~/utils/strings";
 import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 
 export async function getMyTasks() {
   const user = auth();
@@ -30,23 +27,20 @@ export async function createTask(data: z.infer<typeof addTaskSchema>) {
 
   if (!user.userId) throw new Error("User not authenticated");
 
-  try {
-    const space = await getSpaceByName(data.space);
+  const space = await getSpaceByName(data.space);
 
-    if (!space) throw new Error("Space not found");
+  if (!space) throw new Error("Space not found");
 
-    await db.insert(tasks).values({
+  return await db
+    .insert(tasks)
+    .values({
       userId: user.userId,
       ...data,
       isComplete: false,
       space_id: space.id,
       recurrency: data.recurrent ? "daily" : null,
-    });
-  } catch (error) {
-    return error;
-  } finally {
-    redirect("/dashboard");
-  }
+    })
+    .returning();
 }
 
 export async function getSpaceByName(space: string) {
@@ -87,38 +81,28 @@ export async function createSpace(data: z.infer<typeof addSpaceSchema>) {
 
   if (!user.userId) throw new Error("User not authenticated");
 
-  let redi = true;
+  const existingSpace = await getSpaceByName(data.name);
+  if (existingSpace) throw new Error("A space with this name already exists");
 
-  try {
-    const space = await getSpaceByName(data.name);
+  const parentSpaceId = await getParentSpaceId(data.parent_space);
 
-    if (space) throw new Error("A space with this name already exists");
+  return await db
+    .insert(spaces)
+    .values({
+      userId: user.userId,
+      ...data,
+      parent_space: parentSpaceId,
+    })
+    .returning();
+}
 
-    if (data.parent_space !== "") {
-      const parentSpace = await getSpaceByName(data.parent_space);
+async function getParentSpaceId(parentSpaceName: string) {
+  if (parentSpaceName === "") return -1;
 
-      if (!parentSpace) throw new Error("Parent space not found");
+  const parentSpace = await getSpaceByName(parentSpaceName);
+  if (!parentSpace) throw new Error("Parent space not found");
 
-      await db.insert(spaces).values({
-        userId: user.userId,
-        ...data,
-        parent_space: parentSpace.id,
-      });
-    } else {
-      await db.insert(spaces).values({
-        userId: user.userId,
-        ...data,
-        parent_space: -1,
-      });
-    }
-  } catch (error) {
-    redi = false;
-    return getErrorMessage(error);
-  } finally {
-    if (redi) {
-      redirect("/dashboard");
-    }
-  }
+  return parentSpace.id;
 }
 
 export async function deleteTask(id: number) {

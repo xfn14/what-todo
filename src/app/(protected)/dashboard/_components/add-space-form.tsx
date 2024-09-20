@@ -26,12 +26,16 @@ import { Button } from "~/components/ui/button";
 import { DialogClose } from "~/components/ui/dialog";
 import { colorClasses, spaceColor } from "~/server/db/schema";
 import { cn } from "~/lib/utils";
+import { useSpacesStore } from "~/stores/spaces-store";
 
 export interface AddSpaceFormProps {
   parentlessSpaces: Space[];
 }
 
-export function AddSpaceForm({ parentlessSpaces }: AddSpaceFormProps) {
+export function AddSpaceForm() {
+  const parentlessSpaces = useSpacesStore((state) => state.getParentlessSpaces);
+  const updateSpace = useSpacesStore((state) => state.updateSpace);
+
   const closeButton = useRef<HTMLButtonElement>(null);
   const [disabled, setDisabled] = useState(false);
   const [resMessage, setResMessage] = useState("");
@@ -49,21 +53,23 @@ export function AddSpaceForm({ parentlessSpaces }: AddSpaceFormProps) {
     setDisabled(true);
     setResMessage("");
 
-    let res = undefined;
-
     try {
-      form.reset();
-      res = await createSpaceAction({
+      const [res, err] = await createSpaceAction({
         name: data.name,
         color: data.color,
         parent_space: data.parent_space,
       });
-    } finally {
-      if (res) {
-        setResMessage(res[0] ?? "");
-      } else {
+
+      if (err) {
+        setResMessage(err.message);
+        return;
+      } else if (res) {
+        updateSpace(res[0] as Space);
         closeButton.current?.click();
       }
+    } catch (error) {
+      console.log("Space creation failed");
+    } finally {
       setDisabled(false);
     }
   }
@@ -134,7 +140,7 @@ export function AddSpaceForm({ parentlessSpaces }: AddSpaceFormProps) {
                 </FormControl>
 
                 <SelectContent>
-                  {parentlessSpaces.map((space) => (
+                  {parentlessSpaces().map((space) => (
                     <SelectItem key={space.name} value={space.name}>
                       {space.name}
                     </SelectItem>

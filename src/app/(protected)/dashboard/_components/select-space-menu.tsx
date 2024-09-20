@@ -7,16 +7,12 @@ import {
   MenubarContent,
   MenubarItem,
 } from "~/components/ui/menubar";
+import { useSpacesStore } from "~/stores/spaces-store";
 import { Space } from "~/types";
 
-export interface SelectSpaceMenuProps {
-  spaces: Space[];
-}
-
-export function SelectSpaceMenu({ spaces }: SelectSpaceMenuProps) {
-  const getChildSpaces = (parentId: number) => {
-    return spaces.filter((space) => space.parent_space === parentId);
-  };
+export function SelectSpaceMenu() {
+  const spaces = useSpacesStore((state) => state.spaces);
+  const getChildSpaces = useSpacesStore((state) => state.getChildSpaces);
 
   return (
     <>
