@@ -20,6 +20,7 @@ import { useTasksStore } from "~/stores/tasks-store";
 import type { Task } from "~/types";
 import { formatedTimestamp, truncateTaskTitle } from "~/utils/strings";
 import { AddTaskButton } from "./add-task-button";
+import { Badge } from "~/components/ui/badge";
 
 export interface TaskListProps {
   type: string;
@@ -171,30 +172,22 @@ export function TasksList({ type }: TaskListProps) {
                       {formatedTimestamp(task.startAt)}
                     </span>
 
-                    <span
-                      className={cn("rounded-full px-2 py-1 text-sm", {
-                        "bg-red-100 text-red-800": task.priority === "high",
-                        "bg-yellow-100 text-yellow-800":
-                          task.priority === "medium",
-                        "bg-green-100 text-green-800": task.priority === "low",
-                      })}
+                    <Badge
+                      variant={
+                        task.priority === "high"
+                          ? "redbg"
+                          : task.priority === "medium"
+                            ? "yellowbg"
+                            : "greenbg"
+                      }
                     >
                       {task.priority}
-                    </span>
+                    </Badge>
 
                     {space ? (
-                      <span
-                        className={cn(
-                          "rounded-full px-2 py-1 text-sm",
-                          colorClass,
-                        )}
-                      >
-                        {space.name}
-                      </span>
+                      <Badge variant={space.color}>{space.name}</Badge>
                     ) : (
-                      <span className="text-sm text-red-500">
-                        Error finding space
-                      </span>
+                      <Badge variant={"red"}>Error finding space</Badge>
                     )}
                   </div>
                 );

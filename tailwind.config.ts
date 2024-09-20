@@ -5,17 +5,12 @@ export default {
   darkMode: ["class"],
   content: ["./src/**/*.tsx"],
   safelist: [
-    // Space colors
-    "bg-red-800",
-    "text-red-800",
-    "bg-green-800",
-    "text-green-800",
-    "bg-blue-800",
-    "text-blue-800",
-    "bg-yellow-800",
-    "text-yellow-800",
-    "bg-purple-800",
-    "text-purple-800",
+    {
+      pattern: /bg-(red|green|blue|yellow|purple)-(800|400)(\/[0-9]{1,2})?/,
+    },
+    {
+      pattern: /text-(red|green|blue|yellow|purple)-(200|300|400|500|800)?/,
+    },
   ],
   theme: {
     extend: {
