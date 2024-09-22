@@ -186,7 +186,7 @@ export function TasksList({ type }: TaskListProps) {
                           <SheetTitle>{task.title}</SheetTitle>
                           <SheetDescription>
                             Make changes to your task here. Click save when
-                            you're done.
+                            you&apos;re done.
                           </SheetDescription>
 
                           <EditTaskForm taskId={task.id} />
