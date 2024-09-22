@@ -13,7 +13,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="mb-2 flex items-center gap-4">
+      <div className="mb-2 flex flex-wrap items-center gap-4">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <AddSpaceButton />
       </div>

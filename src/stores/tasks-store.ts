@@ -5,6 +5,7 @@ import type { Task } from "~/types";
 interface TasksState {
   tasks: Task[];
   initTasks: () => void;
+  getTask: (task_id: number) => Task | undefined;
   updateTask: (updatedTask: Task) => void;
   getTodaysTasks: () => Task[];
 }
@@ -19,6 +20,9 @@ export const useTasksStore = create<TasksState>((set, get) => ({
       .catch((error) => {
         console.error("Failed to fetch tasks:", error);
       });
+  },
+  getTask: (task_id) => {
+    return get().tasks.find((task) => task.id === task_id);
   },
   updateTask: (task) => {
     set((state) => {

@@ -13,23 +13,31 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Label } from "~/components/ui/label";
 import { toggleTasksCompletionAction } from "~/server/actions/actions";
-import { colorClasses } from "~/server/db/schema";
 import { useSpacesStore } from "~/stores/spaces-store";
 import { useTasksStore } from "~/stores/tasks-store";
 import type { Task } from "~/types";
 import { formatedTimestamp, truncateTaskTitle } from "~/utils/strings";
 import { AddTaskButton } from "./add-task-button";
 import { Badge } from "~/components/ui/badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "~/components/ui/sheet";
+import { EditTaskForm } from "./edit-task-form";
 
 export interface TaskListProps {
   type: string;
 }
 
 const sortOptions = [
-  { value: "createdAt", label: "Created At" },
-  { value: "startAt", label: "Started At" },
+  { value: "startAt", label: "Start time" },
+  { value: "isComplete", label: "Completion" },
   { value: "priority", label: "Priority" },
-  { value: "isComplete", label: "Is completed" },
+  { value: "createdAt", label: "Creation" },
 ];
 
 export function TasksList({ type }: TaskListProps) {
@@ -40,7 +48,7 @@ export function TasksList({ type }: TaskListProps) {
 
   const title = type === "all_tasks" ? "All tasks" : "Today's tasks";
   const [disabeledTasks, setDisabledTasks] = useState<number[]>([]);
-  const [sortCriterion, setSortCriterion] = useState<string>("createdAt");
+  const [sortCriterion, setSortCriterion] = useState<string>("startAt");
   const [isAscending, setIsAscending] = useState<boolean>(false);
 
   const getLabelForSortCriterion = (value: string) => {
@@ -86,13 +94,13 @@ export function TasksList({ type }: TaskListProps) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center justify-between">
+          <div className="flex flex-wrap items-center gap-4">
             <span className="text-2xl font-bold">{title}</span>
             <AddTaskButton />
           </div>
 
-          <div className="flex justify-end gap-4">
+          <div className="flex flex-wrap gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-32" id="sort_by">
@@ -141,10 +149,12 @@ export function TasksList({ type }: TaskListProps) {
                   (space) => space.id === task.space_id,
                 );
                 const truncatedTitle = truncateTaskTitle(task.title, 45);
-                const colorClass = space ? colorClasses[space.color] : "";
 
                 return (
-                  <div key={task.id} className="flex items-center space-x-2">
+                  <div
+                    key={task.id}
+                    className="flex flex-wrap items-center space-x-2"
+                  >
                     <Checkbox
                       id={`all-${task.id}`}
                       checked={task.isComplete}
@@ -152,20 +162,37 @@ export function TasksList({ type }: TaskListProps) {
                       disabled={disabeledTasks.includes(task.id)}
                     />
 
-                    <Label
-                      htmlFor={`all-${task.id}`}
-                      className={`flex-grow ${
-                        task.isComplete
-                          ? "text-muted-foreground line-through"
-                          : ""
-                      }`}
-                    >
-                      <span className="md:hidden">
-                        {truncateTaskTitle(task.title, 20)}
-                      </span>
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <Label
+                          // htmlFor={`all-${task.id}`}
+                          className={`flex-grow ${
+                            task.isComplete
+                              ? "text-muted-foreground line-through"
+                              : ""
+                          }`}
+                        >
+                          <span className="md:hidden">
+                            {truncateTaskTitle(task.title, 20)}
+                          </span>
 
-                      <span className="hidden md:flex">{truncatedTitle}</span>
-                    </Label>
+                          <span className="hidden md:flex">
+                            {truncatedTitle}
+                          </span>
+                        </Label>
+                      </SheetTrigger>
+                      <SheetContent>
+                        <SheetHeader>
+                          <SheetTitle>{task.title}</SheetTitle>
+                          <SheetDescription>
+                            Make changes to your task here. Click save when
+                            you're done.
+                          </SheetDescription>
+
+                          <EditTaskForm taskId={task.id} />
+                        </SheetHeader>
+                      </SheetContent>
+                    </Sheet>
 
                     <span className="text-sm text-muted-foreground">
                       {formatedTimestamp(task.startAt)}

@@ -6,7 +6,7 @@ import { CalendarIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { TimePickerDemo } from "~/components/time-picker-demo";
+import { TimePicker } from "~/components/time-picker";
 import { Button } from "~/components/ui/button";
 import { Calendar } from "~/components/ui/calendar";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -214,10 +214,7 @@ export function AddTaskForm() {
                     initialFocus
                   />
                   <div className="border-t border-border p-3">
-                    <TimePickerDemo
-                      setDate={field.onChange}
-                      date={field.value}
-                    />
+                    <TimePicker setDate={field.onChange} date={field.value} />
                   </div>
                 </PopoverContent>
               </Popover>
@@ -258,10 +255,7 @@ export function AddTaskForm() {
                     initialFocus
                   />
                   <div className="border-t border-border p-3">
-                    <TimePickerDemo
-                      setDate={field.onChange}
-                      date={field.value}
-                    />
+                    <TimePicker setDate={field.onChange} date={field.value} />
                   </div>
                 </PopoverContent>
               </Popover>
