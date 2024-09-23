@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import ColorSelection from "~/components/form-fields/color-selection";
 import { Button } from "~/components/ui/button";
 import { DialogClose } from "~/components/ui/dialog";
 import {
@@ -21,10 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { cn } from "~/lib/utils";
 import { createSpaceAction } from "~/server/actions/actions";
 import { addSpaceSchema } from "~/server/actions/schemas";
-import { colorClasses, spaceColor } from "~/server/db/schema";
 import { useSpacesStore } from "~/stores/spaces-store";
 import type { Space } from "~/types";
 
@@ -90,40 +89,7 @@ export function AddSpaceForm() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="color"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Color</FormLabel>
-
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Select a color" />
-                  </SelectTrigger>
-                </FormControl>
-
-                <SelectContent>
-                  {spaceColor.map((color) => {
-                    const colorClass = colorClasses[color];
-
-                    return (
-                      <SelectItem key={color as string} value={color as string}>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={cn(`h-4 w-4 rounded-full`, colorClass)}
-                          />
-                          {color.charAt(0).toUpperCase() + color.slice(1)}
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </FormItem>
-          )}
-        />
+        <ColorSelection control={form.control} />
 
         <FormField
           control={form.control}

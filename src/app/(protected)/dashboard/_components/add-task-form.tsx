@@ -1,11 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import DatePicker from "~/components/form-fields/date-picker";
+import PrioritySelection from "~/components/form-fields/priority-selection";
 import { TimePicker } from "~/components/time-picker";
 import { Button } from "~/components/ui/button";
 import { Calendar } from "~/components/ui/calendar";
@@ -149,119 +150,11 @@ export function AddTaskForm() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="priority"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Priority</FormLabel>
+        <PrioritySelection control={form.control} />
 
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Select a priority" />
-                  </SelectTrigger>
-                </FormControl>
+        <DatePicker control={form.control} name="startAt" />
 
-                <SelectContent>
-                  <SelectItem key={"low"} value={"low"}>
-                    Low
-                  </SelectItem>
-
-                  <SelectItem key={"medium"} value={"medium"}>
-                    Medium
-                  </SelectItem>
-
-                  <SelectItem key={"high"} value={"high"}>
-                    High
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="startAt"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel className="text-left">Start Time</FormLabel>
-              <Popover>
-                <FormControl>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "justify-start text-left font-normal",
-                        !field.value && "text-muted-foreground",
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? (
-                        format(field.value, "PPP HH:mm:ss")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                </FormControl>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    initialFocus
-                  />
-                  <div className="border-t border-border p-3">
-                    <TimePicker setDate={field.onChange} date={field.value} />
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="endAt"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel className="text-left">End Time</FormLabel>
-              <Popover>
-                <FormControl>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "justify-start text-left font-normal",
-                        !field.value && "text-muted-foreground",
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? (
-                        format(field.value, "PPP HH:mm:ss")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                </FormControl>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    initialFocus
-                  />
-                  <div className="border-t border-border p-3">
-                    <TimePicker setDate={field.onChange} date={field.value} />
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </FormItem>
-          )}
-        />
+        <DatePicker control={form.control} name="endAt" />
 
         <FormField
           control={form.control}
