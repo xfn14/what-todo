@@ -1,15 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import DatePicker from "~/components/form-fields/date-picker";
 import PrioritySelection from "~/components/form-fields/priority-selection";
-import { TimePicker } from "~/components/time-picker";
 import { Button } from "~/components/ui/button";
-import { Calendar } from "~/components/ui/calendar";
 import { Checkbox } from "~/components/ui/checkbox";
 import { DialogClose } from "~/components/ui/dialog";
 import {
@@ -21,11 +18,6 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -33,22 +25,25 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Textarea } from "~/components/ui/textarea";
-import { cn } from "~/lib/utils";
 import { createTaskAction } from "~/server/actions/actions";
-import { addTaskSchema } from "~/server/actions/schemas";
+import { taskSchema } from "~/server/actions/schemas";
 import { useSpacesStore } from "~/stores/spaces-store";
 import { useTasksStore } from "~/stores/tasks-store";
 import type { Task } from "~/types";
 
-export function AddTaskForm() {
+export interface TaskFormProps {
+  type: "add" | "edit";
+}
+
+export function AddTaskForm({ type = "add" }: TaskFormProps) {
   const spaces = useSpacesStore((state) => state.spaces);
   const updateTask = useTasksStore((state) => state.updateTask);
 
   const closeButton = useRef<HTMLButtonElement>(null);
   const [disabled, setDisabled] = useState(false);
 
-  const form = useForm<z.infer<typeof addTaskSchema>>({
-    resolver: zodResolver(addTaskSchema),
+  const form = useForm<z.infer<typeof taskSchema>>({
+    resolver: zodResolver(taskSchema),
     defaultValues: {
       title: "",
       space: "",
@@ -60,29 +55,32 @@ export function AddTaskForm() {
     },
   });
 
-  async function onSubmit(data: z.infer<typeof addTaskSchema>) {
-    console.log("gooods");
+  async function onSubmit(data: z.infer<typeof taskSchema>) {
     setDisabled(true);
 
     try {
-      const [res, err] = await createTaskAction({
-        title: data.title,
-        space: data.space,
-        description: data.description,
-        priority: data.priority,
-        startAt: data.startAt,
-        endAt: data.endAt,
-        recurrent: data.recurrent,
-      });
+      if (type === "add") {
+        const [res, err] = await createTaskAction({
+          title: data.title,
+          space: data.space,
+          description: data.description,
+          priority: data.priority,
+          startAt: data.startAt,
+          endAt: data.endAt,
+          recurrent: data.recurrent,
+        });
 
-      if (err) {
-        console.error("Task creation failed due to an error", err);
-        return;
-      } else if (res) {
-        console.log("Task created successfully:", res);
-        updateTask(res[0] as Task);
-        form.reset();
-        closeButton.current?.click();
+        if (err) {
+          console.error("Task creation failed due to an error", err);
+          return;
+        } else if (res) {
+          console.log("Task created successfully:", res);
+          updateTask(res[0] as Task);
+          form.reset();
+          closeButton.current?.click();
+        }
+      } else if (type === "edit") {
+        console.log("Edit task form is not implemented yet.");
       }
     } catch (error) {
       console.error("Task creation failed due to an exception", error);
@@ -173,12 +171,12 @@ export function AddTaskForm() {
         />
 
         <Button type="submit" className="w-full" disabled={disabled}>
-          Create Task
+          {type === "add" ? "Create Task" : "Save changes"}
         </Button>
 
         <DialogClose asChild>
           <Button ref={closeButton} className="sr-only">
-            Cancel
+            Close
           </Button>
         </DialogClose>
       </form>

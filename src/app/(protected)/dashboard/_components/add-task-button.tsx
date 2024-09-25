@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { AddTaskForm } from "./add-task-form";
+import { AddTaskForm } from "./task-form";
 
 export function AddTaskButton() {
   return (

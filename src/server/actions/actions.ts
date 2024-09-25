@@ -4,12 +4,12 @@ import { createServerAction } from "zsa";
 import { createSpace, createTask, toggleTaskCompletion } from "../db/queries";
 import {
   addSpaceSchema,
-  addTaskSchema,
+  taskSchema,
   toggleTasksCompletionSchema,
 } from "./schemas";
 
 export const createTaskAction = createServerAction()
-  .input(addTaskSchema)
+  .input(taskSchema)
   .handler(async ({ input }) => {
     return await createTask(input);
   });

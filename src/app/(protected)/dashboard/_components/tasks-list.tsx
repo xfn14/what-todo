@@ -27,7 +27,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "~/components/ui/sheet";
-import { EditTaskForm } from "./edit-task-form";
+import { AddTaskForm } from "./task-form";
 
 export interface TaskListProps {
   type: string;
@@ -181,7 +181,7 @@ export function TasksList({ type }: TaskListProps) {
                           </span>
                         </Label>
                       </SheetTrigger>
-                      <SheetContent>
+                      <SheetContent className="tiny-scrollbar overflow-scroll overflow-x-hidden">
                         <SheetHeader>
                           <SheetTitle>{task.title}</SheetTitle>
                           <SheetDescription>
@@ -189,7 +189,7 @@ export function TasksList({ type }: TaskListProps) {
                             you&apos;re done.
                           </SheetDescription>
 
-                          <EditTaskForm taskId={task.id} />
+                          <AddTaskForm type="edit" />
                         </SheetHeader>
                       </SheetContent>
                     </Sheet>

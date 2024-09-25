@@ -1,6 +1,6 @@
 import { Control } from "react-hook-form";
 import { z } from "zod";
-import { addTaskSchema } from "~/server/actions/schemas";
+import { taskSchema } from "~/server/actions/schemas";
 import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import {
   Select,
@@ -11,7 +11,7 @@ import {
 } from "../ui/select";
 
 export interface PrioritySelectionProps {
-  control: Control<z.infer<typeof addTaskSchema>>;
+  control: Control<z.infer<typeof taskSchema>>;
 }
 
 const PrioritySelection = ({ control }: PrioritySelectionProps) => {

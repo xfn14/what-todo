@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { spaceColor } from "../db/schema";
 
-export const addTaskSchema = z.object({
+export const taskSchema = z.object({
   title: z.string().min(1),
   space: z.string().min(1),
   description: z.string(),

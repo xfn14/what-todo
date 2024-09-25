@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import {
   addSpaceSchema,
-  addTaskSchema,
+  taskSchema,
   toggleTasksCompletionSchema,
 } from "../actions/schemas";
 import { db } from ".";
@@ -22,7 +22,7 @@ export async function getMyTasks() {
   });
 }
 
-export async function createTask(data: z.infer<typeof addTaskSchema>) {
+export async function createTask(data: z.infer<typeof taskSchema>) {
   const user = auth();
 
   if (!user.userId) throw new Error("User not authenticated");

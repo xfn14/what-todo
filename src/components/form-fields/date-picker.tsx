@@ -3,7 +3,7 @@ import { CalendarIcon } from "lucide-react";
 import { Control } from "react-hook-form";
 import { z } from "zod";
 import { cn } from "~/lib/utils";
-import { addTaskSchema } from "~/server/actions/schemas";
+import { taskSchema } from "~/server/actions/schemas";
 import { TimePicker } from "../time-picker";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
@@ -11,7 +11,7 @@ import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export interface DatePickerProps {
-  control: Control<z.infer<typeof addTaskSchema>>;
+  control: Control<z.infer<typeof taskSchema>>;
   name: "startAt" | "endAt";
 }
 

@@ -77,4 +77,8 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
+  .tiny-scrollbar {
+    scrollbar-width: thin;
+  }
 }
