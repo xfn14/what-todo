@@ -1,7 +1,4 @@
-import { Control } from "react-hook-form";
-import { z } from "zod";
-import { taskSchema } from "~/server/actions/schemas";
-import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { FormControl, FormItem, FormLabel } from "../ui/form";
 import {
   Select,
   SelectContent,
@@ -11,42 +8,37 @@ import {
 } from "../ui/select";
 
 export interface PrioritySelectionProps {
-  control: Control<z.infer<typeof taskSchema>>;
+  value: any;
+  onChange: (...event: any[]) => void;
 }
 
-const PrioritySelection = ({ control }: PrioritySelectionProps) => {
+const PrioritySelection = ({ value, onChange }: PrioritySelectionProps) => {
   return (
-    <FormField
-      control={control}
-      name="priority"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Priority</FormLabel>
+    <FormItem>
+      <FormLabel>Priority</FormLabel>
 
-          <Select onValueChange={field.onChange} value={field.value}>
-            <FormControl>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a priority" />
-              </SelectTrigger>
-            </FormControl>
+      <Select onValueChange={onChange} value={value}>
+        <FormControl>
+          <SelectTrigger className="col-span-3">
+            <SelectValue placeholder="Select a priority" />
+          </SelectTrigger>
+        </FormControl>
 
-            <SelectContent>
-              <SelectItem key={"low"} value={"low"}>
-                Low
-              </SelectItem>
+        <SelectContent>
+          <SelectItem key={"low"} value={"low"}>
+            Low
+          </SelectItem>
 
-              <SelectItem key={"medium"} value={"medium"}>
-                Medium
-              </SelectItem>
+          <SelectItem key={"medium"} value={"medium"}>
+            Medium
+          </SelectItem>
 
-              <SelectItem key={"high"} value={"high"}>
-                High
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </FormItem>
-      )}
-    />
+          <SelectItem key={"high"} value={"high"}>
+            High
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    </FormItem>
   );
 };
 

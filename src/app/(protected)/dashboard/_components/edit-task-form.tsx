@@ -171,7 +171,13 @@ export function EditTaskForm({ task }: EditTaskFormProps) {
           )}
         />
 
-        <PrioritySelection control={form.control} />
+        <FormField
+          control={form.control}
+          name={"priority"}
+          render={({ field }) => (
+            <PrioritySelection onChange={field.onChange} value={field.value} />
+          )}
+        />
 
         <FormField
           control={form.control}
