@@ -9,8 +9,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export interface DatePickerProps {
   label: string;
-  value: any;
-  onChange: (...event: any[]) => void;
+  value: Date | undefined;
+  onChange: (value: Date | undefined) => void;
 }
 
 const DatePicker = ({ label, value, onChange }: DatePickerProps) => {

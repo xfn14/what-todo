@@ -8,8 +8,8 @@ import {
 } from "../ui/select";
 
 export interface PrioritySelectionProps {
-  value: any;
-  onChange: (...event: any[]) => void;
+  value: "low" | "medium" | "high";
+  onChange: (value: "low" | "medium" | "high") => void;
 }
 
 const PrioritySelection = ({ value, onChange }: PrioritySelectionProps) => {
