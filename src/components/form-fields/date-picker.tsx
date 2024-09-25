@@ -3,62 +3,51 @@ import { CalendarIcon } from "lucide-react";
 import { Control } from "react-hook-form";
 import { z } from "zod";
 import { cn } from "~/lib/utils";
-import { taskSchema } from "~/server/actions/schemas";
 import { TimePicker } from "../time-picker";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { addTaskSchema, updateTaskSchema } from "~/server/actions/schemas";
 
 export interface DatePickerProps {
-  control: Control<z.infer<typeof taskSchema>>;
-  name: "startAt" | "endAt";
+  label: string;
+  value: any;
+  onChange: (...event: any[]) => void;
 }
 
-const DatePicker = ({ control, name }: DatePickerProps) => {
+const DatePicker = ({ label, value, onChange }: DatePickerProps) => {
   return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="flex flex-col">
-          <FormLabel className="text-left">
-            {name === "startAt" ? "Start" : "End"} Time
-          </FormLabel>
-          <Popover>
-            <FormControl>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "justify-start text-left font-normal",
-                    !field.value && "text-muted-foreground",
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {field.value ? (
-                    format(field.value, "PPP HH:mm:ss")
-                  ) : (
-                    <span>Pick a date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-            </FormControl>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={field.value}
-                onSelect={field.onChange}
-                initialFocus
-              />
-              <div className="border-t border-border p-3">
-                <TimePicker setDate={field.onChange} date={field.value} />
-              </div>
-            </PopoverContent>
-          </Popover>
-        </FormItem>
-      )}
-    />
+    <FormItem className="flex flex-col">
+      <FormLabel className="text-left">{label}</FormLabel>
+      <Popover>
+        <FormControl>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "justify-start text-left font-normal",
+                !value && "text-muted-foreground",
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {value ? format(value, "PPP HH:mm:ss") : <span>Pick a date</span>}
+            </Button>
+          </PopoverTrigger>
+        </FormControl>
+        <PopoverContent className="w-auto p-0">
+          <Calendar
+            mode="single"
+            selected={value}
+            onSelect={onChange}
+            initialFocus
+          />
+          <div className="border-t border-border p-3">
+            <TimePicker setDate={onChange} date={value} />
+          </div>
+        </PopoverContent>
+      </Popover>
+    </FormItem>
   );
 };
 

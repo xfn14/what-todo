@@ -173,9 +173,29 @@ export function EditTaskForm({ task }: EditTaskFormProps) {
 
         <PrioritySelection control={form.control} />
 
-        <DatePicker control={form.control} name="startAt" />
+        <FormField
+          control={form.control}
+          name={"startAt"}
+          render={({ field }) => (
+            <DatePicker
+              label={"Start Time"}
+              onChange={field.onChange}
+              value={field.value}
+            />
+          )}
+        />
 
-        <DatePicker control={form.control} name="endAt" />
+        <FormField
+          control={form.control}
+          name={"endAt"}
+          render={({ field }) => (
+            <DatePicker
+              label={"End Time"}
+              onChange={field.onChange}
+              value={field.value}
+            />
+          )}
+        />
 
         <FormField
           control={form.control}
