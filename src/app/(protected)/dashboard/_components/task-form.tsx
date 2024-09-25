@@ -32,7 +32,7 @@ import { useTasksStore } from "~/stores/tasks-store";
 import type { Task } from "~/types";
 
 export interface TaskFormProps {
-  type: "add" | "edit";
+  type?: "add" | "edit";
 }
 
 export function AddTaskForm({ type = "add" }: TaskFormProps) {
