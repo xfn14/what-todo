@@ -22,7 +22,9 @@ const DatePicker = ({ control, name }: DatePickerProps) => {
       name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel className="text-left">Start Time</FormLabel>
+          <FormLabel className="text-left">
+            {name === "startAt" ? "Start" : "End"} Time
+          </FormLabel>
           <Popover>
             <FormControl>
               <PopoverTrigger asChild>

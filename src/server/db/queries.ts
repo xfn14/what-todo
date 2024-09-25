@@ -4,8 +4,10 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import {
   addSpaceSchema,
-  taskSchema,
+  addTaskSchema,
+  deleteTaskSchema,
   toggleTasksCompletionSchema,
+  updateTaskSchema,
 } from "../actions/schemas";
 import { db } from ".";
 import { spaces, tasks } from "./schema";
@@ -22,7 +24,7 @@ export async function getMyTasks() {
   });
 }
 
-export async function createTask(data: z.infer<typeof taskSchema>) {
+export async function createTask(data: z.infer<typeof addTaskSchema>) {
   const user = auth();
 
   if (!user.userId) throw new Error("User not authenticated");
@@ -40,6 +42,30 @@ export async function createTask(data: z.infer<typeof taskSchema>) {
       space_id: space.id,
       recurrency: data.recurrent ? "daily" : null,
     })
+    .returning();
+}
+
+export async function updateTask(data: z.infer<typeof updateTaskSchema>) {
+  const user = auth();
+
+  if (!user.userId) throw new Error("User not authenticated");
+
+  const space = await getSpaceByName(data.space);
+
+  if (!space) throw new Error("Space not found");
+
+  return await db
+    .update(tasks)
+    .set({
+      title: data.title,
+      description: data.description,
+      priority: data.priority,
+      startAt: data.startAt,
+      endAt: data.endAt,
+      space_id: space.id,
+      recurrency: data.recurrent ? "daily" : null,
+    })
+    .where(and(eq(tasks.userId, user.userId), eq(tasks.id, data.id)))
     .returning();
 }
 
@@ -105,14 +131,14 @@ async function getParentSpaceId(parentSpaceName: string) {
   return parentSpace.id;
 }
 
-export async function deleteTask(id: number) {
+export async function deleteTask(data: z.infer<typeof deleteTaskSchema>) {
   const user = auth();
 
   if (!user.userId) throw new Error("User not authenticated");
 
   await db
     .delete(tasks)
-    .where(and(eq(tasks.userId, user.userId), eq(tasks.id, id)));
+    .where(and(eq(tasks.userId, user.userId), eq(tasks.id, data.id)));
 }
 
 export async function deleteSpace(id: number) {

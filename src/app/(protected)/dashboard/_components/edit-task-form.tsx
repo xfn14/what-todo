@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Trash } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -25,65 +26,87 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Textarea } from "~/components/ui/textarea";
-import { createTaskAction } from "~/server/actions/actions";
-import { taskSchema } from "~/server/actions/schemas";
+import { deleteTaskAction, updateTaskAction } from "~/server/actions/actions";
+import { updateTaskSchema } from "~/server/actions/schemas";
 import { useSpacesStore } from "~/stores/spaces-store";
 import { useTasksStore } from "~/stores/tasks-store";
 import type { Task } from "~/types";
 
-export interface TaskFormProps {
-  type?: "add" | "edit";
+export interface EditTaskFormProps {
+  task: Task;
 }
 
-export function AddTaskForm({ type = "add" }: TaskFormProps) {
+export function EditTaskForm({ task }: EditTaskFormProps) {
   const spaces = useSpacesStore((state) => state.spaces);
+  const getSpace = useSpacesStore((state) => state.getSpace);
   const updateTask = useTasksStore((state) => state.updateTask);
+  const removeTask = useTasksStore((state) => state.removeTask);
 
   const closeButton = useRef<HTMLButtonElement>(null);
   const [disabled, setDisabled] = useState(false);
 
-  const form = useForm<z.infer<typeof taskSchema>>({
-    resolver: zodResolver(taskSchema),
+  const form = useForm<z.infer<typeof updateTaskSchema>>({
+    resolver: zodResolver(updateTaskSchema),
     defaultValues: {
-      title: "",
-      space: "",
-      description: "",
-      priority: "low",
-      startAt: new Date(),
-      endAt: undefined,
+      id: task.id,
+      title: task.title,
+      space: getSpace(task.space_id)?.name ?? "",
+      description: task.description ?? "",
+      priority: task.priority ?? "low",
+      startAt: task.startAt ?? new Date(),
+      endAt: task.endAt ?? undefined,
       recurrent: false,
     },
   });
 
-  async function onSubmit(data: z.infer<typeof taskSchema>) {
+  async function onSubmit(data: z.infer<typeof updateTaskSchema>) {
     setDisabled(true);
 
     try {
-      if (type === "add") {
-        const [res, err] = await createTaskAction({
-          title: data.title,
-          space: data.space,
-          description: data.description,
-          priority: data.priority,
-          startAt: data.startAt,
-          endAt: data.endAt,
-          recurrent: data.recurrent,
-        });
+      const [res, err] = await updateTaskAction({
+        id: data.id,
+        title: data.title,
+        space: data.space,
+        description: data.description,
+        priority: data.priority,
+        startAt: data.startAt,
+        endAt: data.endAt,
+        recurrent: data.recurrent,
+      });
 
-        if (err) {
-          console.error("Task creation failed due to an error", err);
-          return;
-        } else if (res) {
-          console.log("Task created successfully:", res);
-          updateTask(res[0] as Task);
-          form.reset();
-          closeButton.current?.click();
-        }
-      } else if (type === "edit") {
-        console.log("Edit task form is not implemented yet.");
+      if (err) {
+        console.error("Task update failed due to an error", err);
+        return;
+      } else if (res) {
+        console.log("Task updated successfully:", res);
+        updateTask(res[0] as Task);
+        closeButton.current?.click();
       }
     } catch (error) {
-      console.error("Task creation failed due to an exception", error);
+      console.error("Task update failed due to an exception", error);
+    } finally {
+      setDisabled(false);
+    }
+  }
+
+  async function onDelete() {
+    setDisabled(true);
+
+    try {
+      const [res, err] = await deleteTaskAction({
+        id: task.id,
+      });
+
+      if (err) {
+        console.error("Task deletion failed due to an error", err);
+        return;
+      } else if (res) {
+        console.log("Task deleted successfully:", res);
+        removeTask(task.id);
+        closeButton.current?.click();
+      }
+    } catch (error) {
+      console.error("Task deletion failed due to an exception", error);
     } finally {
       setDisabled(false);
     }
@@ -170,12 +193,28 @@ export function AddTaskForm({ type = "add" }: TaskFormProps) {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={disabled}>
-          {type === "add" ? "Create Task" : "Save changes"}
-        </Button>
+        <div className="flex w-full gap-4">
+          <Button
+            type="submit"
+            variant="secondary"
+            className="w-full"
+            disabled={disabled}
+          >
+            Save changes
+          </Button>
+
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={onDelete}
+            className="w-12"
+          >
+            <Trash className="h-6 w-6" />
+          </Button>
+        </div>
 
         <DialogClose asChild>
-          <Button ref={closeButton} className="sr-only">
+          <Button type="reset" ref={closeButton} className="sr-only">
             Close
           </Button>
         </DialogClose>

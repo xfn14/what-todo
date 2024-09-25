@@ -1,17 +1,37 @@
 "use server";
 
 import { createServerAction } from "zsa";
-import { createSpace, createTask, toggleTaskCompletion } from "../db/queries";
+import {
+  createSpace,
+  createTask,
+  deleteTask,
+  toggleTaskCompletion,
+  updateTask,
+} from "../db/queries";
 import {
   addSpaceSchema,
-  taskSchema,
+  addTaskSchema,
+  deleteTaskSchema,
   toggleTasksCompletionSchema,
+  updateTaskSchema,
 } from "./schemas";
 
 export const createTaskAction = createServerAction()
-  .input(taskSchema)
+  .input(addTaskSchema)
   .handler(async ({ input }) => {
     return await createTask(input);
+  });
+
+export const updateTaskAction = createServerAction()
+  .input(updateTaskSchema)
+  .handler(async ({ input }) => {
+    return await updateTask(input);
+  });
+
+export const deleteTaskAction = createServerAction()
+  .input(deleteTaskSchema)
+  .handler(async ({ input }) => {
+    return await deleteTask(input);
   });
 
 export const createSpaceAction = createServerAction()

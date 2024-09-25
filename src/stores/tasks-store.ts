@@ -7,11 +7,13 @@ interface TasksState {
   initTasks: () => void;
   getTask: (task_id: number) => Task | undefined;
   updateTask: (updatedTask: Task) => void;
+  removeTask: (task_id: number) => void;
   getTodaysTasks: () => Task[];
 }
 
 export const useTasksStore = create<TasksState>((set, get) => ({
   tasks: [],
+
   initTasks: () => {
     getMyTasks()
       .then((fetchedTasks) => {
@@ -21,9 +23,11 @@ export const useTasksStore = create<TasksState>((set, get) => ({
         console.error("Failed to fetch tasks:", error);
       });
   },
+
   getTask: (task_id) => {
     return get().tasks.find((task) => task.id === task_id);
   },
+
   updateTask: (task) => {
     set((state) => {
       const existingTaskIndex = state.tasks.findIndex((t) => t.id === task.id);
@@ -38,6 +42,15 @@ export const useTasksStore = create<TasksState>((set, get) => ({
       }
     });
   },
+
+  removeTask: (task_id) => {
+    set((state) => {
+      return {
+        tasks: state.tasks.filter((task) => task.id !== task_id),
+      };
+    });
+  },
+
   getTodaysTasks: () => {
     const today = new Date();
     const tasks = get().tasks;

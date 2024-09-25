@@ -27,7 +27,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "~/components/ui/sheet";
-import { AddTaskForm } from "./task-form";
+import { EditTaskForm } from "./edit-task-form";
 
 export interface TaskListProps {
   type: string;
@@ -166,7 +166,7 @@ export function TasksList({ type }: TaskListProps) {
                       <SheetTrigger asChild>
                         <Label
                           // htmlFor={`all-${task.id}`}
-                          className={`flex-grow ${
+                          className={`flex-grow hover:cursor-pointer hover:underline ${
                             task.isComplete
                               ? "text-muted-foreground line-through"
                               : ""
@@ -189,7 +189,7 @@ export function TasksList({ type }: TaskListProps) {
                             you&apos;re done.
                           </SheetDescription>
 
-                          <AddTaskForm type="edit" />
+                          <EditTaskForm task={task} />
                         </SheetHeader>
                       </SheetContent>
                     </Sheet>

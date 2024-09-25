@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { AddTaskForm } from "./task-form";
+import { CreateTaskForm } from "./create-task-form";
 
 export function AddTaskButton() {
   return (
@@ -31,7 +31,7 @@ export function AddTaskButton() {
           </DialogDescription>
         </DialogHeader>
 
-        <AddTaskForm />
+        <CreateTaskForm />
 
         <DialogFooter></DialogFooter>
       </DialogContent>
