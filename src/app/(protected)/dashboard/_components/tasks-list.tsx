@@ -173,7 +173,7 @@ export function TasksList({ type }: TaskListProps) {
                           }`}
                         >
                           <span className="md:hidden">
-                            {truncateTaskTitle(task.title, 20)}
+                            {truncateTaskTitle(truncatedTitle, 20)}
                           </span>
 
                           <span className="hidden md:flex">
@@ -183,7 +183,7 @@ export function TasksList({ type }: TaskListProps) {
                       </SheetTrigger>
                       <SheetContent className="tiny-scrollbar overflow-scroll overflow-x-hidden">
                         <SheetHeader>
-                          <SheetTitle>{task.title}</SheetTitle>
+                          <SheetTitle>{truncatedTitle}</SheetTitle>
                           <SheetDescription>
                             Make changes to your task here. Click save when
                             you&apos;re done.

@@ -58,7 +58,7 @@ export const tasks = createTable("tasks", {
 
   startAt: timestamp("start_at", { withTimezone: true }).notNull(),
   endAt: timestamp("end_at", { withTimezone: true }),
-  recurrency: varchar("recurrent"),
+  recurrency: varchar("recurrent").notNull(),
 
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
@@ -69,7 +69,7 @@ export const tasks = createTable("tasks", {
 });
 
 export const tasksRelations = relations(tasks, ({ one }) => ({
-  tasks: one(spaces, {
+  space: one(spaces, {
     fields: [tasks.space_id],
     references: [spaces.id],
   }),

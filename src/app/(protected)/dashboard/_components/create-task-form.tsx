@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import DatePicker from "~/components/form-fields/date-picker";
+import HourPicker from "~/components/form-fields/hour-picker";
 import PrioritySelection from "~/components/form-fields/priority-selection";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -152,41 +153,59 @@ export function CreateTaskForm() {
 
         <FormField
           control={form.control}
-          name={"startAt"}
-          render={({ field }) => (
-            <DatePicker
-              label={"Start Time"}
-              onChange={field.onChange}
-              value={field.value}
-            />
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name={"endAt"}
-          render={({ field }) => (
-            <DatePicker
-              label={"End Time"}
-              onChange={field.onChange}
-              value={field.value}
-            />
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="recurrent"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-4 shadow">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormLabel>Recurrent</FormLabel>
-            </FormItem>
+          render={({ field: recurrentField }) => (
+            <>
+              <FormItem className="flex flex-row items-center gap-2 space-y-0 rounded-md py-2 pl-1 shadow">
+                <FormControl>
+                  <Checkbox
+                    checked={recurrentField.value}
+                    onCheckedChange={recurrentField.onChange}
+                  />
+                </FormControl>
+                <FormLabel>Recurrent</FormLabel>
+              </FormItem>
+
+              <FormField
+                control={form.control}
+                name={"startAt"}
+                render={({ field: startAtField }) =>
+                  recurrentField.value ? (
+                    <HourPicker
+                      label={"Start Time"}
+                      onChange={startAtField.onChange}
+                      value={startAtField.value}
+                    />
+                  ) : (
+                    <DatePicker
+                      label={"Start Time"}
+                      onChange={startAtField.onChange}
+                      value={startAtField.value}
+                    />
+                  )
+                }
+              />
+
+              <FormField
+                control={form.control}
+                name={"endAt"}
+                render={({ field: endAtField }) =>
+                  recurrentField.value ? (
+                    <HourPicker
+                      label={"End Time"}
+                      onChange={endAtField.onChange}
+                      value={endAtField.value}
+                    />
+                  ) : (
+                    <DatePicker
+                      label={"End Time"}
+                      onChange={endAtField.onChange}
+                      value={endAtField.value}
+                    />
+                  )
+                }
+              />
+            </>
           )}
         />
 

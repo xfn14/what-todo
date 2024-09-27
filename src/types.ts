@@ -8,7 +8,7 @@ export interface Task {
   priority: "low" | "medium" | "high";
   startAt: Date;
   endAt: Date | null;
-  recurrency: string | null;
+  recurrency: string;
   createdAt: Date;
   updatedAt: Date | null;
 }
