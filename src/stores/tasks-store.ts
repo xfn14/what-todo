@@ -54,8 +54,22 @@ export const useTasksStore = create<TasksState>((set, get) => ({
   getTodaysTasks: () => {
     const today = new Date();
     const tasks = get().tasks;
+
+    const todayWeekDay = today
+      .toLocaleString("en-US", { weekday: "long" })
+      .toLowerCase();
+
     return tasks.filter((task) => {
       const startAt = new Date(task.startAt);
+
+      if (task.recurrency && task.recurrency !== "") {
+        const weekDays = task.recurrency.split(",");
+
+        if (weekDays.includes(todayWeekDay)) {
+          return true;
+        }
+      }
+
       return (
         startAt.getDate() === today.getDate() &&
         startAt.getMonth() === today.getMonth() &&

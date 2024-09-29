@@ -53,6 +53,7 @@ export function TasksList({ type }: TaskListProps) {
   const spaces = useSpacesStore((state) => state.spaces);
 
   const title = type === "all_tasks" ? "All tasks" : "Today's tasks";
+  const todays_tasks = getTodaysTasks();
   const [disabeledTasks, setDisabledTasks] = useState<number[]>([]);
   const [sortCriterion, setSortCriterion] = useState<string>("startAt");
   const [isAscending, setIsAscending] = useState<boolean>(false);
@@ -143,91 +144,91 @@ export function TasksList({ type }: TaskListProps) {
 
       <CardContent>
         <div className="space-y-4">
-          {sortTasks(type === "todays_tasks" ? getTodaysTasks() : tasks)
-            .length === 0 ? (
+          {sortTasks(type === "todays_tasks" ? todays_tasks : tasks).length ===
+          0 ? (
             <div className="text-muted-foreground">No tasks!</div>
           ) : (
             <>
-              {sortTasks(
-                type === "todays_tasks" ? getTodaysTasks() : tasks,
-              ).map((task) => {
-                const space = spaces.find(
-                  (space) => space.id === task.space_id,
-                );
-                const truncatedTitle = truncateTaskTitle(task.title, 45);
+              {sortTasks(type === "todays_tasks" ? todays_tasks : tasks).map(
+                (task) => {
+                  const space = spaces.find(
+                    (space) => space.id === task.space_id,
+                  );
+                  const truncatedTitle = truncateTaskTitle(task.title, 45);
 
-                return (
-                  <div
-                    key={task.id}
-                    className="flex flex-wrap items-center space-x-2"
-                  >
-                    <Checkbox
-                      id={`all-${task.id}`}
-                      checked={task.isComplete}
-                      onCheckedChange={() => toggleTask(task.id)}
-                      disabled={disabeledTasks.includes(task.id)}
-                    />
-
-                    <Sheet>
-                      <SheetTrigger asChild>
-                        <Label
-                          // htmlFor={`all-${task.id}`}
-                          className={`flex-grow hover:cursor-pointer hover:underline ${
-                            task.isComplete
-                              ? "text-muted-foreground line-through"
-                              : ""
-                          }`}
-                        >
-                          <span className="md:hidden">
-                            {truncateTaskTitle(truncatedTitle, 20)}
-                          </span>
-
-                          <span className="hidden md:flex">
-                            {truncatedTitle}
-                          </span>
-                        </Label>
-                      </SheetTrigger>
-                      <SheetContent className="tiny-scrollbar overflow-scroll overflow-x-hidden">
-                        <SheetHeader>
-                          <SheetTitle>{truncatedTitle}</SheetTitle>
-                          <SheetDescription>
-                            Make changes to your task here. Click save when
-                            you&apos;re done.
-                          </SheetDescription>
-
-                          <EditTaskForm task={task} />
-                        </SheetHeader>
-                      </SheetContent>
-                    </Sheet>
-
-                    <span className="text-sm text-muted-foreground">
-                      {(type === "all_tasks"
-                        ? task.recurrency === ""
-                          ? formatDate(task.startAt) + " at "
-                          : formatWeekDays(task.recurrency) + " at "
-                        : "") + formatTime(task.startAt)}
-                    </span>
-
-                    <Badge
-                      variant={
-                        task.priority === "high"
-                          ? "redbg"
-                          : task.priority === "medium"
-                            ? "yellowbg"
-                            : "greenbg"
-                      }
+                  return (
+                    <div
+                      key={task.id}
+                      className="flex flex-wrap items-center space-x-2"
                     >
-                      {task.priority}
-                    </Badge>
+                      <Checkbox
+                        id={`all-${task.id}`}
+                        checked={task.isComplete}
+                        onCheckedChange={() => toggleTask(task.id)}
+                        disabled={disabeledTasks.includes(task.id)}
+                      />
 
-                    {space ? (
-                      <Badge variant={space.color}>{space.name}</Badge>
-                    ) : (
-                      <Badge variant={"red"}>Error finding space</Badge>
-                    )}
-                  </div>
-                );
-              })}
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <Label
+                            // htmlFor={`all-${task.id}`}
+                            className={`flex-grow hover:cursor-pointer hover:underline ${
+                              task.isComplete
+                                ? "text-muted-foreground line-through"
+                                : ""
+                            }`}
+                          >
+                            <span className="md:hidden">
+                              {truncateTaskTitle(truncatedTitle, 20)}
+                            </span>
+
+                            <span className="hidden md:flex">
+                              {truncatedTitle}
+                            </span>
+                          </Label>
+                        </SheetTrigger>
+                        <SheetContent className="tiny-scrollbar overflow-scroll overflow-x-hidden">
+                          <SheetHeader>
+                            <SheetTitle>{truncatedTitle}</SheetTitle>
+                            <SheetDescription>
+                              Make changes to your task here. Click save when
+                              you&apos;re done.
+                            </SheetDescription>
+
+                            <EditTaskForm task={task} />
+                          </SheetHeader>
+                        </SheetContent>
+                      </Sheet>
+
+                      <span className="text-sm text-muted-foreground">
+                        {(type === "all_tasks"
+                          ? task.recurrency === ""
+                            ? formatDate(task.startAt) + " at "
+                            : formatWeekDays(task.recurrency) + " at "
+                          : "") + formatTime(task.startAt)}
+                      </span>
+
+                      <Badge
+                        variant={
+                          task.priority === "high"
+                            ? "redbg"
+                            : task.priority === "medium"
+                              ? "yellowbg"
+                              : "greenbg"
+                        }
+                      >
+                        {task.priority}
+                      </Badge>
+
+                      {space ? (
+                        <Badge variant={space.color}>{space.name}</Badge>
+                      ) : (
+                        <Badge variant={"red"}>Error finding space</Badge>
+                      )}
+                    </div>
+                  );
+                },
+              )}
             </>
           )}
         </div>
