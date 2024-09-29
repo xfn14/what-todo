@@ -27,15 +27,15 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Textarea } from "~/components/ui/textarea";
+import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 import { createTaskAction } from "~/server/actions/actions";
-import { addTaskSchema } from "~/server/actions/schemas";
+import { addTaskSchema, validWeekDays } from "~/server/actions/schemas";
 import { useSpacesStore } from "~/stores/spaces-store";
 import { useTasksStore } from "~/stores/tasks-store";
 import type { Task } from "~/types";
 
 export function CreateTaskForm() {
   const spaces = useSpacesStore((state) => state.spaces);
-  const getSpace = useSpacesStore((state) => state.getSpace);
   const updateTask = useTasksStore((state) => state.updateTask);
 
   const closeButton = useRef<HTMLButtonElement>(null);
@@ -66,6 +66,7 @@ export function CreateTaskForm() {
         startAt: data.startAt,
         endAt: data.endAt,
         recurrent: data.recurrent,
+        weekDays: data.weekDays,
       });
 
       if (err) {
@@ -165,6 +166,33 @@ export function CreateTaskForm() {
                 </FormControl>
                 <FormLabel>Recurrent</FormLabel>
               </FormItem>
+
+              {recurrentField.value && (
+                <FormField
+                  control={form.control}
+                  name="weekDays"
+                  render={({ field: weekDaysField }) => (
+                    <FormItem>
+                      <FormLabel>Days of the Week</FormLabel>
+                      <FormControl>
+                        <ToggleGroup
+                          type="multiple"
+                          value={weekDaysField.value || []}
+                          onValueChange={weekDaysField.onChange}
+                          className="grid grid-cols-7 gap-2"
+                        >
+                          {validWeekDays.map((day) => (
+                            <ToggleGroupItem key={day} value={day}>
+                              {day.charAt(0).toUpperCase() +
+                                day.substring(1, 3)}
+                            </ToggleGroupItem>
+                          ))}
+                        </ToggleGroup>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              )}
 
               <FormField
                 control={form.control}

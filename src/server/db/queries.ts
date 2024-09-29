@@ -40,7 +40,7 @@ export async function createTask(data: z.infer<typeof addTaskSchema>) {
       ...data,
       isComplete: false,
       space_id: space.id,
-      recurrency: data.recurrent ? "daily" : "",
+      recurrency: data.recurrent ? (data.weekDays?.join(",") ?? "") : "",
     })
     .returning();
 }
@@ -63,7 +63,7 @@ export async function updateTask(data: z.infer<typeof updateTaskSchema>) {
       startAt: data.startAt,
       endAt: data.endAt,
       space_id: space.id,
-      recurrency: data.recurrent ? "daily" : "",
+      recurrency: data.recurrent ? (data.weekDays?.join(",") ?? "") : "",
     })
     .where(and(eq(tasks.userId, user.userId), eq(tasks.id, data.id)))
     .returning();

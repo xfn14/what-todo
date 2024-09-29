@@ -27,8 +27,9 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Textarea } from "~/components/ui/textarea";
+import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 import { deleteTaskAction, updateTaskAction } from "~/server/actions/actions";
-import { updateTaskSchema } from "~/server/actions/schemas";
+import { updateTaskSchema, validWeekDays } from "~/server/actions/schemas";
 import { useSpacesStore } from "~/stores/spaces-store";
 import { useTasksStore } from "~/stores/tasks-store";
 import type { Task } from "~/types";
@@ -56,7 +57,15 @@ export function EditTaskForm({ task }: EditTaskFormProps) {
       priority: task.priority ?? "low",
       startAt: task.startAt ?? new Date(),
       endAt: task.endAt ?? undefined,
-      recurrent: task.recurrency === "daily" ? true : false,
+      recurrent: task.recurrency === "" ? false : true,
+      weekDays:
+        task.recurrency === ""
+          ? []
+          : task.recurrency
+              .split(",")
+              .filter((day): day is (typeof validWeekDays)[number] =>
+                (validWeekDays as readonly string[]).includes(day),
+              ),
     },
   });
 
@@ -73,6 +82,7 @@ export function EditTaskForm({ task }: EditTaskFormProps) {
         startAt: data.startAt,
         endAt: data.endAt,
         recurrent: data.recurrent,
+        weekDays: data.weekDays,
       });
 
       if (err) {
@@ -194,6 +204,33 @@ export function EditTaskForm({ task }: EditTaskFormProps) {
                 </FormControl>
                 <FormLabel>Recurrent</FormLabel>
               </FormItem>
+
+              {recurrentField.value && (
+                <FormField
+                  control={form.control}
+                  name="weekDays"
+                  render={({ field: weekDaysField }) => (
+                    <FormItem>
+                      <FormLabel>Days of the Week</FormLabel>
+                      <FormControl>
+                        <ToggleGroup
+                          type="multiple"
+                          value={weekDaysField.value || []}
+                          onValueChange={weekDaysField.onChange}
+                          className="grid grid-cols-7 gap-2"
+                        >
+                          {validWeekDays.map((day) => (
+                            <ToggleGroupItem key={day} value={day}>
+                              {day.charAt(0).toUpperCase() +
+                                day.substring(1, 3)}
+                            </ToggleGroupItem>
+                          ))}
+                        </ToggleGroup>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              )}
 
               <FormField
                 control={form.control}
