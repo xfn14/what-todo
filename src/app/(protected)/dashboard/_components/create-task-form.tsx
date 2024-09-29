@@ -177,7 +177,7 @@ export function CreateTaskForm() {
                       <FormControl>
                         <ToggleGroup
                           type="multiple"
-                          value={weekDaysField.value || []}
+                          value={weekDaysField.value ?? []}
                           onValueChange={weekDaysField.onChange}
                           className="grid grid-cols-7 gap-2"
                         >
