@@ -1,9 +1,9 @@
 "use client";
 
-import Dashboard from "./_components/dashboard";
-import { useTasksStore } from "~/stores/tasks-store";
 import { useEffect } from "react";
 import { useSpacesStore } from "~/stores/spaces-store";
+import { useTasksStore } from "~/stores/tasks-store";
+import Dashboard from "./_components/dashboard";
 
 const DashboardPage = () => {
   const initSpaces = useSpacesStore((state) => state.initSpaces);

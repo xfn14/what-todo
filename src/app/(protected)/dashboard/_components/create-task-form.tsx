@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -40,6 +39,8 @@ export function CreateTaskForm() {
 
   const closeButton = useRef<HTMLButtonElement>(null);
   const [disabled, setDisabled] = useState(false);
+  const currentTime = new Date();
+  currentTime.setSeconds(0);
 
   const form = useForm<z.infer<typeof addTaskSchema>>({
     resolver: zodResolver(addTaskSchema),
@@ -48,7 +49,7 @@ export function CreateTaskForm() {
       space: "",
       description: "",
       priority: "low",
-      startAt: new Date(),
+      startAt: currentTime,
       endAt: undefined,
       recurrent: false,
     },

@@ -11,6 +11,7 @@ export interface Task {
   recurrency: string;
   createdAt: Date;
   updatedAt: Date | null;
+  lastCompletedAt: Date | null;
 }
 
 export interface Space {

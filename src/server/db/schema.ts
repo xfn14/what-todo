@@ -1,12 +1,12 @@
 import { relations, sql } from "drizzle-orm";
 import {
-  pgTableCreator,
-  pgEnum,
-  serial,
-  varchar,
-  integer,
   boolean,
+  integer,
+  pgEnum,
+  pgTableCreator,
+  serial,
   timestamp,
+  varchar,
 } from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator((name) => `t3-what-todo_${name}`);
@@ -59,6 +59,7 @@ export const tasks = createTable("tasks", {
   startAt: timestamp("start_at", { withTimezone: true }).notNull(),
   endAt: timestamp("end_at", { withTimezone: true }),
   recurrency: varchar("recurrent").notNull(),
+  lastCompletedAt: timestamp("last_completed_at", { withTimezone: true }),
 
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)

@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
+import { getRecurrentTasksToUpdate } from "~/utils/tasks";
 import { db } from ".";
 import {
   addSpaceSchema,
@@ -17,6 +18,35 @@ export async function getMyTasks() {
   const user = auth();
 
   if (!user.userId) throw new Error("User not authenticated");
+
+  const result = await db.query.tasks.findMany({
+    where: (model, { eq }) => eq(model.userId, user.userId),
+    orderBy: (model, { desc }) => desc(model.createdAt),
+  });
+
+  const tasksToUpdate = getRecurrentTasksToUpdate(result);
+
+  if (tasksToUpdate.length === 0) return result;
+
+  console.log("Tasks to update", tasksToUpdate);
+
+  const updatedTasks = tasksToUpdate.map((task) => ({
+    id: task.id,
+    isComplete: false,
+    lastCompletedAt: new Date(),
+  }));
+
+  await Promise.all(
+    updatedTasks.map((task) =>
+      db
+        .update(tasks)
+        .set({
+          isComplete: task.isComplete,
+          lastCompletedAt: task.lastCompletedAt,
+        })
+        .where(and(eq(tasks.userId, user.userId), eq(tasks.id, task.id))),
+    ),
+  );
 
   return await db.query.tasks.findMany({
     where: (model, { eq }) => eq(model.userId, user.userId),
@@ -167,6 +197,6 @@ export async function toggleTaskCompletion(
 
   await db
     .update(tasks)
-    .set({ isComplete: !task.isComplete })
+    .set({ isComplete: !task.isComplete, lastCompletedAt: new Date() })
     .where(and(eq(tasks.userId, user.userId), eq(tasks.id, data.taskId)));
 }

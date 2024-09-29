@@ -1,11 +1,11 @@
 "use client";
 
 import { useSpacesStore } from "~/stores/spaces-store";
+import { useTasksStore } from "~/stores/tasks-store";
 import { AddSpaceButton } from "./add-space-button";
 import { SelectSpaceMenu } from "./select-space-menu";
 import { TasksListTabs } from "./tasks-list-tabs";
 import TasksStats from "./tasks-stats";
-import { useTasksStore } from "~/stores/tasks-store";
 
 const Dashboard = () => {
   const tasks = useTasksStore((state) => state.tasks);

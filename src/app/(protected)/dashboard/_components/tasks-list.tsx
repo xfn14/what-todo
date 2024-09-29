@@ -16,7 +16,13 @@ import { toggleTasksCompletionAction } from "~/server/actions/actions";
 import { useSpacesStore } from "~/stores/spaces-store";
 import { useTasksStore } from "~/stores/tasks-store";
 import type { Task } from "~/types";
-import { formatedTimestamp, truncateTaskTitle } from "~/utils/strings";
+import {
+  formatDate,
+  formatDateTime,
+  formatTime,
+  formatWeekDays,
+  truncateTaskTitle,
+} from "~/utils/strings";
 import { AddTaskButton } from "./add-task-button";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -195,7 +201,11 @@ export function TasksList({ type }: TaskListProps) {
                     </Sheet>
 
                     <span className="text-sm text-muted-foreground">
-                      {formatedTimestamp(task.startAt)}
+                      {(type === "all_tasks"
+                        ? task.recurrency === ""
+                          ? formatDate(task.startAt) + " at "
+                          : formatWeekDays(task.recurrency) + " at "
+                        : "") + formatTime(task.startAt)}
                     </span>
 
                     <Badge
