@@ -1,7 +1,9 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
+import { db } from ".";
 import {
   addSpaceSchema,
   addTaskSchema,
@@ -9,9 +11,7 @@ import {
   toggleTasksCompletionSchema,
   updateTaskSchema,
 } from "../actions/schemas";
-import { db } from ".";
 import { spaces, tasks } from "./schema";
-import { and, eq } from "drizzle-orm";
 
 export async function getMyTasks() {
   const user = auth();
@@ -136,9 +136,10 @@ export async function deleteTask(data: z.infer<typeof deleteTaskSchema>) {
 
   if (!user.userId) throw new Error("User not authenticated");
 
-  await db
+  return await db
     .delete(tasks)
-    .where(and(eq(tasks.userId, user.userId), eq(tasks.id, data.id)));
+    .where(and(eq(tasks.userId, user.userId), eq(tasks.id, data.id)))
+    .returning();
 }
 
 export async function deleteSpace(id: number) {
