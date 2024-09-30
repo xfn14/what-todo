@@ -10,8 +10,12 @@ const DashboardPage = () => {
   const initTasks = useTasksStore((state) => state.initTasks);
 
   useEffect(() => {
-    initSpaces();
-    initTasks();
+    const initialize = async () => {
+      await initSpaces();
+      initTasks();
+    };
+
+    void initialize();
   }, [initSpaces, initTasks]);
 
   return (

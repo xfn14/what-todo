@@ -17,7 +17,7 @@ const SpacePage = ({
       await initSpaces();
       setIsLoading(false);
     };
-    initialize();
+    void initialize();
   }, [initSpaces]);
 
   if (isLoading) {
