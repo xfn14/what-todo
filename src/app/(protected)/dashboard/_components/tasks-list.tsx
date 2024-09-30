@@ -22,6 +22,7 @@ import {
   formatTime,
   formatWeekDays,
   truncateTaskTitle,
+  upperCaseFirstLetter,
 } from "~/utils/strings";
 import { AddTaskButton } from "./add-task-button";
 import { Badge } from "~/components/ui/badge";
@@ -217,7 +218,7 @@ export function TasksList({ type }: TaskListProps) {
                               : "greenbg"
                         }
                       >
-                        {task.priority}
+                        {upperCaseFirstLetter(task.priority)}
                       </Badge>
 
                       {space ? (

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useSpacesStore } from "~/stores/spaces-store";
 import { useTasksStore } from "~/stores/tasks-store";
 import { AddSpaceButton } from "./add-space-button";

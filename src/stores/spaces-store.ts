@@ -4,7 +4,7 @@ import type { Space } from "~/types";
 
 interface SpacesState {
   spaces: Space[];
-  initSpaces: () => void;
+  initSpaces: () => Promise<void>;
   getSpace: (space_id: number) => Space | undefined;
   updateSpace: (updatedSpace: Space) => void;
   getParentlessSpaces: () => Space[];
@@ -13,14 +13,13 @@ interface SpacesState {
 
 export const useSpacesStore = create<SpacesState>((set, get) => ({
   spaces: [],
-  initSpaces: () => {
-    getMySpaces()
-      .then((fetchedSpaces) => {
-        set({ spaces: fetchedSpaces });
-      })
-      .catch((error) => {
-        console.error("Failed to fetch spaces:", error);
-      });
+  initSpaces: async () => {
+    try {
+      const fetchedSpaces = await getMySpaces();
+      set({ spaces: fetchedSpaces });
+    } catch (error) {
+      console.error("Failed to fetch spaces:", error);
+    }
   },
   getSpace: (space_id) => {
     return get().spaces.find((space) => space.id === space_id);

@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { upperCaseFirstLetter } from "~/utils/strings";
 
 export interface ColorSelectionProps {
   control: Control<z.infer<typeof addSpaceSchema>>;
@@ -42,7 +43,7 @@ const ColorSelection = ({ control }: ColorSelectionProps) => {
                       <span
                         className={cn(`h-4 w-4 rounded-full`, colorClass)}
                       />
-                      {color.charAt(0).toUpperCase() + color.slice(1)}
+                      {upperCaseFirstLetter(color)}
                     </div>
                   </SelectItem>
                 );

@@ -5,6 +5,10 @@ export function truncateTaskTitle(title: string, maxLength = 40): string {
   return title;
 }
 
+export const upperCaseFirstLetter = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 export const formatDate = (d: Date) => {
   const date = d.toISOString().split("T")[0];
   return `${date}`;
@@ -27,7 +31,7 @@ export const formatWeekDays = (weekDays: string) => {
   if (weekDaysArray.length === 0) return "Never";
 
   return weekDaysArray
-    .map((day) => day.charAt(0).toUpperCase() + day.slice(1, 3))
+    .map((day) => upperCaseFirstLetter(day).slice(0, 3))
     .join(", ");
 };
 
