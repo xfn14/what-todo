@@ -36,10 +36,6 @@ import {
 } from "~/components/ui/sheet";
 import { EditTaskForm } from "./edit-task-form";
 
-export interface TaskListProps {
-  type: string;
-}
-
 const sortOptions = [
   { value: "startAt", label: "Start time" },
   { value: "isComplete", label: "Completion" },
@@ -47,13 +43,22 @@ const sortOptions = [
   { value: "createdAt", label: "Creation" },
 ];
 
-export function TasksList({ type }: TaskListProps) {
+export interface TaskListProps {
+  type: string;
+  title: string;
+  selectedSpaceId?: number;
+}
+
+export function TasksList({
+  type,
+  title,
+  selectedSpaceId = -1,
+}: TaskListProps) {
   const tasks = useTasksStore((state) => state.tasks);
   const updateTask = useTasksStore((state) => state.updateTask);
   const getTodaysTasks = useTasksStore((state) => state.getTodaysTasks);
   const spaces = useSpacesStore((state) => state.spaces);
 
-  const title = type === "all_tasks" ? "All tasks" : "Today's tasks";
   const todays_tasks = getTodaysTasks();
   const [disabeledTasks, setDisabledTasks] = useState<number[]>([]);
   const [sortCriterion, setSortCriterion] = useState<string>("startAt");
@@ -221,10 +226,14 @@ export function TasksList({ type }: TaskListProps) {
                         {upperCaseFirstLetter(task.priority)}
                       </Badge>
 
-                      {space ? (
-                        <Badge variant={space.color}>{space.name}</Badge>
-                      ) : (
-                        <Badge variant={"red"}>Error finding space</Badge>
+                      {selectedSpaceId === -1 && (
+                        <>
+                          {space ? (
+                            <Badge variant={space.color}>{space.name}</Badge>
+                          ) : (
+                            <Badge variant={"red"}>Error finding space</Badge>
+                          )}
+                        </>
                       )}
                     </div>
                   );

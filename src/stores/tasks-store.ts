@@ -1,10 +1,11 @@
 import { create } from "zustand";
-import { getMyTasks } from "~/server/db/queries";
+import { getMySpaceTasks, getMyTasks } from "~/server/db/queries";
 import type { Task } from "~/types";
 
 interface TasksState {
   tasks: Task[];
   initTasks: () => void;
+  initSpaceTasks: (space_id: number) => void;
   getTask: (task_id: number) => Task | undefined;
   updateTask: (updatedTask: Task) => void;
   removeTask: (task_id: number) => void;
@@ -16,6 +17,16 @@ export const useTasksStore = create<TasksState>((set, get) => ({
 
   initTasks: () => {
     getMyTasks()
+      .then((fetchedTasks) => {
+        set({ tasks: fetchedTasks });
+      })
+      .catch((error) => {
+        console.error("Failed to fetch tasks:", error);
+      });
+  },
+
+  initSpaceTasks: (space_id) => {
+    getMySpaceTasks(space_id)
       .then((fetchedTasks) => {
         set({ tasks: fetchedTasks });
       })

@@ -95,7 +95,9 @@ export function AddSpaceForm() {
           control={form.control}
           name="parent_space"
           render={({ field }) => (
-            <FormItem>
+            <FormItem
+              className={parentlessSpaces().length === 0 ? "sr-only" : ""}
+            >
               <FormLabel>Parent Space (Optional)</FormLabel>
 
               <Select onValueChange={field.onChange} value={field.value}>

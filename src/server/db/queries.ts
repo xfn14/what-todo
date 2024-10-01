@@ -13,6 +13,7 @@ import {
   updateTaskSchema,
 } from "../actions/schemas";
 import { spaces, tasks } from "./schema";
+import { Task } from "~/types";
 
 export async function getMyTasks() {
   const user = auth();
@@ -23,6 +24,41 @@ export async function getMyTasks() {
     where: (model, { eq }) => eq(model.userId, user.userId),
     orderBy: (model, { desc }) => desc(model.createdAt),
   });
+
+  const res = await handlerRecurrentTasks(result);
+  if (res) return res;
+
+  return await db.query.tasks.findMany({
+    where: (model, { eq }) => eq(model.userId, user.userId),
+    orderBy: (model, { desc }) => desc(model.createdAt),
+  });
+}
+
+export async function getMySpaceTasks(space_id: number) {
+  const user = auth();
+
+  if (!user.userId) throw new Error("User not authenticated");
+
+  const result = await db.query.tasks.findMany({
+    where: (model, { eq, and }) =>
+      and(eq(model.userId, user.userId), eq(model.space_id, space_id)),
+    orderBy: (model, { desc }) => desc(model.createdAt),
+  });
+
+  const res = await handlerRecurrentTasks(result);
+  if (res) return res;
+
+  return await db.query.tasks.findMany({
+    where: (model, { eq, and }) =>
+      and(eq(model.userId, user.userId), eq(model.space_id, space_id)),
+    orderBy: (model, { desc }) => desc(model.createdAt),
+  });
+}
+
+export async function handlerRecurrentTasks(result: Task[]) {
+  const user = auth();
+
+  if (!user.userId) throw new Error("User not authenticated");
 
   const tasksToUpdate = getRecurrentTasksToUpdate(result);
 
@@ -48,10 +84,7 @@ export async function getMyTasks() {
     ),
   );
 
-  return await db.query.tasks.findMany({
-    where: (model, { eq }) => eq(model.userId, user.userId),
-    orderBy: (model, { desc }) => desc(model.createdAt),
-  });
+  return null;
 }
 
 export async function createTask(data: z.infer<typeof addTaskSchema>) {

@@ -8,17 +8,22 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
-import { Menubar } from "~/components/ui/menubar";
 import { useSpacesStore } from "~/stores/spaces-store";
 
-export function SelectSpaceMenu() {
+export interface SelectSpaceMenuProps {
+  selectedSpaceId?: number;
+}
+
+export function SelectSpaceMenu({
+  selectedSpaceId = -1,
+}: SelectSpaceMenuProps) {
   const spaces = useSpacesStore((state) => state.spaces);
   const getChildSpaces = useSpacesStore((state) => state.getChildSpaces);
 
   return (
     <>
       {spaces.length > 0 && (
-        <Menubar className="no-scrollbar flex gap-2 overflow-y-hidden overflow-x-scroll">
+        <div className="no-scrollbar flex items-center gap-2 overflow-y-hidden overflow-x-scroll rounded-md border bg-background">
           {spaces
             .filter(
               (space) =>
@@ -30,7 +35,11 @@ export function SelectSpaceMenu() {
               if (childSpaces.length === 0) {
                 return (
                   <div key={space.id}>
-                    <SpacePageButton id={space.id} name={space.name} />
+                    <SpacePageButton
+                      id={space.id}
+                      name={space.name}
+                      selected={selectedSpaceId}
+                    />
                   </div>
                 );
               }
@@ -38,7 +47,11 @@ export function SelectSpaceMenu() {
               return (
                 <HoverCard key={space.id} openDelay={100} closeDelay={100}>
                   <HoverCardTrigger>
-                    <SpacePageButton id={space.id} name={space.name} />
+                    <SpacePageButton
+                      id={space.id}
+                      name={space.name}
+                      selected={selectedSpaceId}
+                    />
                   </HoverCardTrigger>
                   <HoverCardContent
                     sideOffset={0}
@@ -49,6 +62,7 @@ export function SelectSpaceMenu() {
                         <SpacePageButton
                           id={childSpace.id}
                           name={childSpace.name}
+                          selected={selectedSpaceId}
                         />
                       </div>
                     ))}
@@ -56,15 +70,23 @@ export function SelectSpaceMenu() {
                 </HoverCard>
               );
             })}
-        </Menubar>
+        </div>
       )}
     </>
   );
 }
 
-const SpacePageButton = ({ id, name }: { id: number; name: string }) => {
+const SpacePageButton = ({
+  id,
+  name,
+  selected,
+}: {
+  id: number;
+  name: string;
+  selected: number;
+}) => {
   return (
-    <Button size={"sm"} variant={"link"}>
+    <Button size={"sm"} variant={selected === id ? "outline" : "link"}>
       <Link href={`/space/${id}`}>{name}</Link>
     </Button>
   );
