@@ -1,13 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import React from "react";
+import { Button } from "~/components/ui/button";
 import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarTrigger,
-} from "~/components/ui/menubar";
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "~/components/ui/hover-card";
+import { Menubar } from "~/components/ui/menubar";
 import { useSpacesStore } from "~/stores/spaces-store";
 
 export function SelectSpaceMenu() {
@@ -17,29 +18,54 @@ export function SelectSpaceMenu() {
   return (
     <>
       {spaces.length > 0 && (
-        <Menubar className="no-scrollbar flex overflow-y-hidden overflow-x-scroll">
+        <Menubar className="no-scrollbar flex gap-2 overflow-y-hidden overflow-x-scroll">
           {spaces
             .filter(
               (space) =>
                 space.parent_space === -1 || space.parent_space === null,
             )
-            .map((space) => (
-              <MenubarMenu key={space.id}>
-                <MenubarTrigger>{space.name}</MenubarTrigger>
+            .map((space) => {
+              const childSpaces = getChildSpaces(space.id);
 
-                {getChildSpaces(space.id).length > 0 && (
-                  <MenubarContent>
-                    {getChildSpaces(space.id).map((childSpace) => (
-                      <MenubarItem key={childSpace.id}>
-                        {childSpace.name}
-                      </MenubarItem>
+              if (childSpaces.length === 0) {
+                return (
+                  <div key={space.id}>
+                    <SpacePageButton id={space.id} name={space.name} />
+                  </div>
+                );
+              }
+
+              return (
+                <HoverCard key={space.id} openDelay={100} closeDelay={100}>
+                  <HoverCardTrigger>
+                    <SpacePageButton id={space.id} name={space.name} />
+                  </HoverCardTrigger>
+                  <HoverCardContent
+                    sideOffset={0}
+                    className="w-auto text-center"
+                  >
+                    {childSpaces.map((childSpace) => (
+                      <div key={childSpace.id}>
+                        <SpacePageButton
+                          id={childSpace.id}
+                          name={childSpace.name}
+                        />
+                      </div>
                     ))}
-                  </MenubarContent>
-                )}
-              </MenubarMenu>
-            ))}
+                  </HoverCardContent>
+                </HoverCard>
+              );
+            })}
         </Menubar>
       )}
     </>
   );
 }
+
+const SpacePageButton = ({ id, name }: { id: number; name: string }) => {
+  return (
+    <Button size={"sm"} variant={"link"}>
+      <Link href={`/space/${id}`}>{name}</Link>
+    </Button>
+  );
+};
