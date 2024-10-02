@@ -34,7 +34,13 @@ import { useSpacesStore } from "~/stores/spaces-store";
 import { useTasksStore } from "~/stores/tasks-store";
 import type { Task } from "~/types";
 
-export function CreateTaskForm() {
+export interface CreateTaskFormProps {
+  selectedSpaceName?: string;
+}
+
+export function CreateTaskForm({
+  selectedSpaceName = "",
+}: CreateTaskFormProps) {
   const spaces = useSpacesStore((state) => state.spaces);
   const updateTask = useTasksStore((state) => state.updateTask);
 
@@ -47,7 +53,7 @@ export function CreateTaskForm() {
     resolver: zodResolver(addTaskSchema),
     defaultValues: {
       title: "",
-      space: "",
+      space: selectedSpaceName,
       description: "",
       priority: "low",
       startAt: currentTime,
@@ -107,7 +113,7 @@ export function CreateTaskForm() {
           control={form.control}
           name="space"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={selectedSpaceName !== "" ? "sr-only" : ""}>
               <FormLabel>Space</FormLabel>
 
               <Select onValueChange={field.onChange} value={field.value}>

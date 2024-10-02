@@ -18,7 +18,6 @@ import { useTasksStore } from "~/stores/tasks-store";
 import type { Task } from "~/types";
 import {
   formatDate,
-  formatDateTime,
   formatTime,
   formatWeekDays,
   truncateTaskTitle,
@@ -58,11 +57,12 @@ export function TasksList({
   const updateTask = useTasksStore((state) => state.updateTask);
   const getTodaysTasks = useTasksStore((state) => state.getTodaysTasks);
   const spaces = useSpacesStore((state) => state.spaces);
+  const getSpace = useSpacesStore((state) => state.getSpace);
 
   const todays_tasks = getTodaysTasks();
   const [disabeledTasks, setDisabledTasks] = useState<number[]>([]);
   const [sortCriterion, setSortCriterion] = useState<string>("startAt");
-  const [isAscending, setIsAscending] = useState<boolean>(false);
+  const [isAscending, setIsAscending] = useState<boolean>(true);
 
   const getLabelForSortCriterion = (value: string) => {
     const option = sortOptions.find((option) => option.value === value);
@@ -110,7 +110,13 @@ export function TasksList({
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex flex-wrap items-center gap-4">
             <span className="text-2xl font-bold">{title}</span>
-            <AddTaskButton />
+            <AddTaskButton
+              selectedSpaceName={
+                selectedSpaceId === -1
+                  ? ""
+                  : (getSpace(selectedSpaceId)?.name ?? "")
+              }
+            />
           </div>
 
           <div className="flex flex-wrap gap-4">
@@ -201,7 +207,14 @@ export function TasksList({
                               you&apos;re done.
                             </SheetDescription>
 
-                            <EditTaskForm task={task} />
+                            <EditTaskForm
+                              task={task}
+                              selectedSpaceName={
+                                selectedSpaceId === -1
+                                  ? ""
+                                  : (getSpace(selectedSpaceId)?.name ?? "")
+                              }
+                            />
                           </SheetHeader>
                         </SheetContent>
                       </Sheet>

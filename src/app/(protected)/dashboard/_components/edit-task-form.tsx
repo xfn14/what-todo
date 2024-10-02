@@ -37,9 +37,13 @@ import type { Task } from "~/types";
 
 export interface EditTaskFormProps {
   task: Task;
+  selectedSpaceName?: string;
 }
 
-export function EditTaskForm({ task }: EditTaskFormProps) {
+export function EditTaskForm({
+  task,
+  selectedSpaceName = "",
+}: EditTaskFormProps) {
   const spaces = useSpacesStore((state) => state.spaces);
   const getSpace = useSpacesStore((state) => state.getSpace);
   const updateTask = useTasksStore((state) => state.updateTask);
@@ -144,7 +148,7 @@ export function EditTaskForm({ task }: EditTaskFormProps) {
           control={form.control}
           name="space"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className={selectedSpaceName !== "" ? "sr-only" : ""}>
               <FormLabel>Space</FormLabel>
 
               <Select onValueChange={field.onChange} value={field.value}>

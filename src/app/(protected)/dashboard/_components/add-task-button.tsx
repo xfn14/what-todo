@@ -11,7 +11,11 @@ import {
 } from "~/components/ui/dialog";
 import { CreateTaskForm } from "./create-task-form";
 
-export function AddTaskButton() {
+export interface AddTaskButtonProps {
+  selectedSpaceName?: string;
+}
+
+export function AddTaskButton({ selectedSpaceName = "" }: AddTaskButtonProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -31,7 +35,7 @@ export function AddTaskButton() {
           </DialogDescription>
         </DialogHeader>
 
-        <CreateTaskForm />
+        <CreateTaskForm selectedSpaceName={selectedSpaceName} />
 
         <DialogFooter></DialogFooter>
       </DialogContent>
